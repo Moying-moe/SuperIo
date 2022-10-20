@@ -49,7 +49,7 @@ namespace SuperIo
             double dR = Math.Pow(c1.R - c2.R, 2);
             double dG = Math.Pow(c1.G - c2.G, 2);
             double dB = Math.Pow(c1.B - c2.B, 2);
-            return (dR + dG + dB) / 195075d;
+            return Math.Sqrt((dR + dG + dB) / 195075d);
         }
 
         /// <summary>
