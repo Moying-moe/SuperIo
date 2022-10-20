@@ -136,14 +136,14 @@ namespace SuperIo
         /// </summary>
         /// <param name="keyString">Key that will trigger the handler</param>
         /// <param name="keyDownHandler">Key down handler</param>
-        /// <param name="keyUpHander">Key up handler</param>
+        /// <param name="keyUpHandler">Key up handler</param>
         /// <returns></returns>
-        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHander)
+        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler)
         {
             return Register(keyString, new KeyHookHandlerStruct()
             {
                 OnKeyDown = keyDownHandler,
-                OnKeyUp = keyUpHander
+                OnKeyUp = keyUpHandler
             });
         }
 
