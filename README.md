@@ -1,6 +1,6 @@
 # SuperIo
 
-[![License-GPL-3.0](https://img.shields.io/github/license/Moying-moe/SuperIo)](https://github.com/Moying-moe/SuperIo/blob/master/LICENSE)
+[![License-GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange)](https://github.com/Moying-moe/SuperIo/blob/master/LICENSE)
 ![version v0.1.0](https://img.shields.io/badge/version-v0.1.0--alpha-green)
 
 ---
