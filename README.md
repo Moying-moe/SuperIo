@@ -7,11 +7,11 @@
 
 ## Introduction
 
-**SuperIo** is a IO library for *DotNet Framework*.
+*SuperIo* is a IO library for *DotNet Framework*.
 
-With **SuperIo**, you can create an automatic tool that can control your mouse and keyboard.
+With *SuperIo*, you can create an automatic tool that can control your mouse and keyboard.
 
-SuperIo consists of four modules:
+*SuperIo* consists of four modules:
 
 - SuperKeyboard: Provides the ability to manipulate the keyboard through code.
 - SuperMouse: Provides the ability to manipulate the mouse through code.
@@ -48,9 +48,9 @@ Or you can also add these files into your project if you are using *Visual Studi
 
 ### SuperKeyboard
 
-SuperKeyboard use *WinRing0* to implement its functions. So it works on most apps and games.
+`SuperKeyboard` use *WinRing0* to implement its functions. So it works on most apps and games.
 
-You need to initialize SuperKeyboard module before actual use.
+You need to initialize `SuperKeyboard` before actual use.
 
 ```C#
 using SuperIo;
@@ -67,9 +67,9 @@ else
 // ......
 ```
 
-It is recommended to initialize at the beginning of the program. Because SuperKeyboard module need about 0.2 - 1.0s to initialize.
+It is recommended to initialize at the beginning of the program. Because `SuperKeyboard` need about 0.2 - 1.0s to initialize.
 
-You can call `KeyPress(byte)` to simulate simulate a keyboard press.
+You can call `KeyPress(byte)` to simulate a keyboard press.
 
 ```C#
 SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A);
@@ -77,7 +77,7 @@ SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A);
 
 In this case, we used the keycode constant in `SuperKeyboard.Key`. The program will simulate a press on the key **A**.
 
-SuperKeyboard simulates the native input of the PS2 keyboard. So, if you want to input an **uppercase A**, here is the code.
+`SuperKeyboard` simulates the native input of the PS/2 keyboard. So, if you want to input an **uppercase A**, here is the code.
 
 ```C#
 SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_CAPITAL);
@@ -89,9 +89,9 @@ SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A);
 SuperKeyboard.KeyUp(SuperKeyboard.Key.VK_SHIFT);
 ```
 
-Here are 2 new methods! `KeyDown(byte)` and `KeyUp(byte)`. Which literally means to prees down a key or release a key. In this case, we pressed down **Shift** and hold it, then pressed **A** , and then released **Shift**.
+Here are 2 new methods! `KeyDown(byte)` and `KeyUp(byte)`. Which literally means to press down a key or release a key. In this case, we pressed down **Shift** and hold it, then pressed **A** , and then released **Shift**.
 
-KeyPress is implemented by calling KeyDown and KeyUp. SuperIo will automatically add a delay between these two action. The delay defaults to 50 milliseconds. You can set it by calling `SetKeyPressDelay(int)`.
+KeyPress is implemented by calling KeyDown and KeyUp. *SuperIo* will automatically add a delay between these two action. The delay defaults to 50 milliseconds. You can set it by calling `SetKeyPressDelay(int)`.
 
 ```C#
 SuperKeyboard.SetKeyPressDelay(20);
@@ -100,9 +100,9 @@ Console.WriteLine(SuperKeyboard.GetKeyPressDelay()); // => 20
 
 ### SuperMouse
 
-SuperMouse use *User32.mouse_event* to implement its functions. So it works on majority of apps and games.
+`SuperMouse` use *user32.mouse_event* to implement its functions. So it works on majority of apps and games.
 
-Like SuperKeyboard, you need to initialize SuperKeyboard module before actual use.
+Like `SuperKeyboard`, you need to initialize `SuperMouse` module before actual use.
 
 ```C#
 using SuperIo;
@@ -125,7 +125,7 @@ You can call `MoveRelative(int dx, int dy)` to move your mouse relatively. The d
 SuperMouse.MoveRelative(50, 50); // Move the mouse down to the right
 ```
 
-Or, you can call `MoveTo(int x, int y)` to move your mouse to a specific position.
+Or, you can call `MoveTo(int x, int y)` to move your mouse to a specified position.
 
 ```C#
 SuperMouse.MoveTo(960, 540);
@@ -133,7 +133,7 @@ SuperMouse.MoveTo(960, 540);
 
 Method `MoveTo` need to know the size of the screen so that it can move the mouse to the position correctly.
 
-When SuperMouse initialized, it will try to get the size of the screen. In most situation, it works properly. If you find out that your mouse move to a wrong position when you call `MoveTo`, you can specify the screen size at initialization.
+When `SuperMouse` initialized, it will try to get the size of the screen. In most situation, it works properly. If you find out that your mouse move to a wrong position when you call `MoveTo`, you can specify the screen size at initialization.
 
 ```C#
 // ......
@@ -152,7 +152,7 @@ SuperMouse.MoveRelative(50, 0);
 SuperMouse.LButtonUp();
 ```
 
-With `LButtonClick(int)`, you can create multiple clicks one line of code.
+With `LButtonClick(int)`, you can create multiple clicks with just one line of code.
 
 ```C#
 SuperMouse.LButtonClick(2);     // Double Click
@@ -186,11 +186,11 @@ SuperMouse.ScrollDown();    // Same as code above
 
 ### SuperScreen
 
-SuperScreen use *User32* and *Gdi32* to implement its functions. So it works on most apps and games.
+`SuperScreen` use *user32* and *gdi32* to implement its functions. So it works on most apps and games.
 
-Unlike modules above, SuperScreen does not need to initialized before use.
+Unlike modules above, `SuperScreen` does not need to initialized before use.
 
-Call `GetPixelColor(int x, int y)` to get the color of the pixel at (x,y).
+Call `GetPixelColor(int x, int y)` to get the color of the pixel at (x, y).
 
 ```C#
 using System.Drawing;
@@ -215,7 +215,7 @@ Color prettyRed = Color.FromArgb(255,90,90);
 
 SuperScreen.ColorDifference(black, black);      // => 0.0
 SuperScreen.ColorDifference(black, white);      // => 1.0
-SuperScreen.ColorDifference(white, prettyRed);  // => 0.279123414...
+SuperScreen.ColorDifference(white, prettyRed);  // => 0.528321...
 ```
 
 Call `IsColorAt(int x, int y, Color target)` or `IsColorAt(int x, int y, Color target, double similarity)` to get if the color at (x, y) is similar to (or same as) target color.
@@ -230,9 +230,9 @@ SuperScreen.IsColorAt(960, 540, prettyRed, 0.95d);  // => true
 
 ### SuperKeyHook
 
-SuperKeyHook use Windows Hook to implement its functions. So it works on most apps and games.
+`SuperKeyHook` use Windows Hook to implement its functions. So it works on most apps and games.
 
-Unlike modules above, you need to **instantiate** SuperKeyHook to use it.
+Unlike modules above, you need to **instantiate** `SuperKeyHook` to use it.
 
 ```C#
 using SuperIo;
@@ -276,11 +276,11 @@ hotkeyManager.Register(
 );
 ```
 
-OnKeyDown Event will triggered only one time. In other words, OnKeyDown is triggered at the top edge. Similarly, OnKeyUp is triggered at the bottom edge.
+`OnKeyDown` Event will triggered only one time. In other words, `OnKeyDown` is triggered at the top edge. Similarly, `OnKeyUp` is triggered at the bottom edge.
 
 **WARNING!!!**
 
-Because SuperKeyboard can generate native input of the PS2 keyboard. So `SuperKeyboard.KeyPress` **WILL TRIGGER** SuperKeyHook's hook! This may case **UNEXPECT recursive call**!
+Because `SuperKeyboard` can generate native input of the PS2 keyboard. So `SuperKeyboard.KeyPress` **WILL TRIGGER** `SuperKeyHook`'s hook! This may case **UNEXPECT recursive call**!
 
 ```C#
 hotkeyManager.Register(
