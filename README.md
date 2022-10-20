@@ -1,6 +1,6 @@
 # SuperIo
 
-[![License-GPL-3.0](https://img.shields.io/github/license/Moying-moe/SuperIo)](./blob/master/LICENSE)
+[![License-GPL-3.0](https://img.shields.io/github/license/Moying-moe/SuperIo)](https://github.com/Moying-moe/SuperIo/blob/master/LICENSE)
 ![version v0.1.0](https://img.shields.io/badge/version-v0.1.0--alpha-green)
 
 ---
@@ -24,7 +24,7 @@ SuperIo consists of four modules:
 
 CAUTION: **SuperIo currently only runs on 64-bit systems. And will support 32-bit systems in the future.**
 
-You can download the compiled DLL file in [Github Releases Page](./releases). Or you can also clone the repository and build it by yourself.
+You can download the compiled DLL file in [Github Releases Page](https://github.com/Moying-moe/SuperIo/releases). Or you can also clone the repository and build it by yourself.
 
 It contains 3 files. `SuperIo.dll`, `WinRing0x64.dll` and `WinRing0x64.sys`. You need to copy these 3 files to your project's root.
 
@@ -44,7 +44,7 @@ Or you can also add these files into your project if you are using *Visual Studi
 
 ## Usage
 
-*Also see in [SuperIoTestProgram](./tree/master/SuperIoTestProgram).
+*Also see in [SuperIoTestProgram](https://github.com/Moying-moe/SuperIo/tree/master/SuperIoTestProgram).
 
 ### SuperKeyboard
 
