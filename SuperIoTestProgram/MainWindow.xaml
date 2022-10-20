@@ -1,0 +1,30 @@
+﻿<Window x:Class="SuperIoTestProgram.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SuperIoTestProgram"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Row="0" Grid.Column="0" Click="BtnKeyboard_Click">SuperKeyboard test</Button>
+        <Button Grid.Row="0" Grid.Column="1" Click="BtnMouse_Click">SuperMouse test</Button>
+        <Button Grid.Row="1" Grid.Column="0" Click="BtnScreen_Click">SuperScreen test</Button>
+        <Button Grid.Row="1" Grid.Column="1" Click="BtnKeyHook_Click">SuperKeyHook test</Button>
+        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Padding="0,0,0,-2">
+            <TextBlock x:Name="LabelLog" TextWrapping="Wrap" Text="" FontSize="12" VerticalAlignment="Bottom"/>
+        </Label>
+        <TextBox x:Name="TbTest" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Padding="5,5,5,5" FontSize="14"></TextBox>
+    </Grid>
+</Window>
