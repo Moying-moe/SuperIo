@@ -26,11 +26,11 @@ namespace SuperIo
         }
 
         /// <summary>
-        /// Close all modules.
+        /// Dispose all modules.
         /// </summary>
-        public static void Close()
+        public static void Dispose()
         {
-            SuperKeyHook.Close();
+            SuperKeyHook.Dispose();
         }
     }
 }

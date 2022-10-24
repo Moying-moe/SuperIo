@@ -105,7 +105,7 @@ namespace SuperIo
         /// <summary>
         /// Call in application quit event.
         /// </summary>
-        public static void Close()
+        public static void Dispose()
         {
             // 解除键盘钩子
             CheckInitialization();
