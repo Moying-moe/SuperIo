@@ -4,6 +4,17 @@
         <name>SuperIo</name>
     </assembly>
     <members>
+        <member name="M:SuperIo.SuperIo.Initialize">
+            <summary>
+            Initialize all modules.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperIo.Dispose">
+            <summary>
+            Dispose all modules.
+            </summary>
+        </member>
         <member name="M:SuperIo.SuperKeyboard.Initialize">
             <summary>
             Initialize the SuperKeyboard module.
@@ -46,11 +57,11 @@
         <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte,System.Int32)">
             <summary>
             Press the key one time.
-            <para>With keys in argument `with` holding.</para>
+            <para>With keys in argument `modFlags` holding.</para>
             <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
             </summary>
             <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-            <param name="with">CmdKey flag(s).</param>
+            <param name="modFlags">ModKey flag(s).</param>
         </member>
         <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Byte[])">
             <summary>
@@ -75,9 +86,9 @@
             <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
             <param name="interval">Interval between two keys.</param>
         </member>
-        <member name="T:SuperIo.SuperKeyboard.CmdKey">
+        <member name="T:SuperIo.SuperKeyboard.ModKey">
             <summary>
-            Command Keys
+            Modifier Keys
             </summary>
         </member>
         <member name="T:SuperIo.SuperKeyboard.Key">
@@ -496,10 +507,24 @@
             ' "
             </summary>
         </member>
-        <member name="M:SuperIo.SuperKeyHook.#ctor">
+        <member name="M:SuperIo.SuperKeyHook.Initialize">
             <summary>
-            Create Key Hook object.
+            Initialization
             </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Dispose">
+            <summary>
+            Call in application quit event.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.HookProcMathodKeyBoard(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            Handle key event
+            </summary>
+            <param name="code"></param>
+            <param name="wParam"></param>
+            <param name="lParam"></param>
+            <returns></returns>
         </member>
         <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandlerStruct)">
             <summary>
@@ -553,6 +578,11 @@
             </summary>
             <param name="handlerId"></param>
             <returns>Return false if handler which handlerId specified is not exists.</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.RemoveAllGlobalKeyHandlers">
+            <summary>
+            Remove all global key handlers.
+            </summary>
         </member>
         <member name="F:SuperIo.SuperKeyHook.Key.BACK">
             <summary>
@@ -1034,6 +1064,21 @@
             Simply scroll down.
             </summary>
         </member>
+        <member name="M:SuperIo.SuperScreen.Initialize">
+            <summary>
+            Initialize the SuperMouse module.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.Initialize(System.Int32,System.Int32)">
+            <summary>
+            <para>Initialize the SuperMouse module.</para>
+            <para>If auto initialization get the wrong screen size, or you have multiple monitor. Please call this method.</para>
+            </summary>
+            <param name="_screenWidth">screen width</param>
+            <param name="_screenHeight">screen height</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperIo.SuperScreen.GetPixelColor(System.Int32,System.Int32)">
             <summary>
             Get the color of the pixel at (x,y)
@@ -1045,7 +1090,6 @@
         <member name="M:SuperIo.SuperScreen.ColorDifference(System.Drawing.Color,System.Drawing.Color)">
             <summary>
             <para>Return the color distance between 2 colors.</para>
-            <para>Formula: Diff = (R1 - R2)^2 + (G1 - G2)^2 + (B1 - B2)^2 / (255^2 * 3)</para>
             </summary>
             <param name="c1"></param>
             <param name="c2"></param>
@@ -1069,6 +1113,48 @@
             <param name="y">Pixel position y</param>
             <param name="target">Color for comparison</param>
             <param name="similarity">Color similarity limit. Range from 0 to 1. (1 means just the same color)</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.GetScreen">
+            <summary>
+            Get screenshot.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.SearchColor(System.Drawing.Color,SuperIo.SuperScreen.SearchDirection,System.Drawing.Rectangle)">
+            <summary>
+            Search color on the screen
+            </summary>
+            <param name="color"></param>
+            <param name="direction"></param>
+            <param name="area"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.SearchColor(System.Drawing.Color,SuperIo.SuperScreen.SearchDirection,System.Drawing.Rectangle,System.Double)">
+            <summary>
+            Search color on the screen
+            </summary>
+            <param name="color"></param>
+            <param name="direction"></param>
+            <param name="area"></param>
+            <param name="similarity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.SearchColor(System.Drawing.Color,SuperIo.SuperScreen.SearchDirection)">
+            <summary>
+            Search color on the screen
+            </summary>
+            <param name="color"></param>
+            <param name="direction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.SearchColor(System.Drawing.Color,SuperIo.SuperScreen.SearchDirection,System.Double)">
+            <summary>
+            Search color on the screen
+            </summary>
+            <param name="color"></param>
+            <param name="direction"></param>
+            <param name="similarity"></param>
             <returns></returns>
         </member>
         <member name="M:SuperIo.Tools.GetSreenRealSize">

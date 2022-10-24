@@ -40,6 +40,8 @@ namespace SuperIo
         private static int _screenWidth = -1;
         private static int _screenHeight = -1;
 
+        public static bool IsInitialized { get => _initialized; }
+
         #region ArgumentsSetup
         /// <summary>
         /// Initialize the SuperMouse module.
@@ -54,7 +56,7 @@ namespace SuperIo
             try
             {
                 //Rectangle bound = Screen.PrimaryScreen.Bounds;
-                Rectangle bound = Tools.GetSreenRealSize();
+                Size bound = Tools.GetSreenRealSize();
                 _screenWidth = bound.Width;
                 _screenHeight = bound.Height;
             }
@@ -122,9 +124,9 @@ namespace SuperIo
         {
             return _screenHeight;
         }
-        public static Rectangle GetScreenSize()
+        public static Size GetScreenSize()
         {
-            return new Rectangle(0, 0, _screenWidth, _screenHeight);
+            return new Size(_screenWidth, _screenHeight);
         }
         #endregion
 

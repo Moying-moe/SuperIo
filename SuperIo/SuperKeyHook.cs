@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -11,7 +12,7 @@ using System.Windows.Input;
 
 namespace SuperIo
 {
-    public class SuperKeyHook
+    public static class SuperKeyHook
     {
         #region DllImport
         //定义SetWindowsHookEx
@@ -48,35 +49,85 @@ namespace SuperIo
         }
         #endregion
 
-        int _setWindowsHookExReturnKeyBoard;
-        HOOKPROC _keyBoard;
+        public delegate void KeyHookHandler();
+        public delegate bool GlobalKeyHandler(string keyString, bool isKeyDown, bool isKeyUp);
 
-        Dictionary<string, KeyHookHandlerStruct> _registeredHooks = new Dictionary<string, KeyHookHandlerStruct>();
+        [StructLayout(LayoutKind.Sequential)]
+        public class KeyHookHandlerStruct
+        {
+            public bool Ctrl = false;
+            public bool Alt = false;
+            public bool Shift = false;
+            public KeyHookHandler OnKeyDown;
+            public KeyHookHandler OnKeyUp;
+        }
+
+
+        private static bool _initialized = false;        // 模块是否已经初始化
+
+        public static bool IsInitialized { get => _initialized; }
+
+        private static int _setWindowsHookExReturnKeyBoard;
+        private static HOOKPROC _keyBoard;
+        private static int _invokeId = 0;
+
+        private static ushort _ctrlHolding = 0;
+        private static ushort _altHolding = 0;
+        private static ushort _shiftHolding = 0;
+
+        private static Dictionary<string, KeyHookHandlerStruct> _registeredHooks = new Dictionary<string, KeyHookHandlerStruct>();
+        private static Dictionary<int, GlobalKeyHandler> _invokeMethods = new Dictionary<int, GlobalKeyHandler>();
+        private static HashSet<string> _keyStatus = new HashSet<string>();
 
         /// <summary>
-        /// Create Key Hook object.
+        /// Initialization
         /// </summary>
-        public SuperKeyHook()
+        public static bool Initialize()
         {
+            if (_initialized)
+            {
+                return true;
+            }
             _keyBoard = new HOOKPROC(HookProcMathodKeyBoard);//创建委托变量
             Process curProcess = Process.GetCurrentProcess();//获取窗体句柄
             ProcessModule curModule = curProcess.MainModule;
             _setWindowsHookExReturnKeyBoard = SetWindowsHookEx(13, _keyBoard, GetModuleHandle(curModule.ModuleName), 0);
+
+            _initialized = true;
+            return _initialized;
         }
 
-        ~SuperKeyHook()
+        private static void CheckInitialization()
+        {
+            if (!_initialized)
+            {
+                throw new Exception("SuperKeyHook has not initialized yet. Try to call `SuperKeyHook.Initialize()` first.");
+            }
+        }
+
+        /// <summary>
+        /// Call in application quit event.
+        /// </summary>
+        public static void Dispose()
         {
             // 解除键盘钩子
+            CheckInitialization();
+
             UnhookWindowsHookEx(_setWindowsHookExReturnKeyBoard);
         }
 
-        ushort _ctrlHolding = 0;
-        ushort _altHolding = 0;
-        ushort _shiftHolding = 0;
-
-        public int HookProcMathodKeyBoard(int code, int wParam, IntPtr lParam)
+        
+        /// <summary>
+        /// Handle key event
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static int HookProcMathodKeyBoard(int code, int wParam, IntPtr lParam)
         {
             // 处理键盘事件
+            CheckInitialization();
 
             tagKBDLLHOOKSTRUCT v = (tagKBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(tagKBDLLHOOKSTRUCT));//将捕获的键盘信息存储到存储键盘信息的结构体中
             
@@ -84,28 +135,52 @@ namespace SuperIo
             if (code >= 0)//如果code的值大于0说明获取到了按键输入
             {
                 string keyString = key.ToString();
+                bool isKeyDown = false;
+                bool isKeyUp = false;
 
-                lock (_invokeMethods)
+                if (wParam == WM_KEYDOWN)
                 {
-                    foreach (KeyValuePair<int, GlobalKeyHandler> pair in _invokeMethods)
+                    if (!_keyStatus.Contains(keyString))
                     {
-                        bool handlerResult = pair.Value(keyString, wParam == WM_KEYDOWN, wParam == WM_KEYUP);
-                        if (! handlerResult)
-                        {
-                            // 如果GlobalKeyHandler返回了false 则阻止它激活接下来的逻辑
-                            return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
-                        }
+                        _keyStatus.Add(keyString);
+                        isKeyDown = true;
+                    }
+                }
+                if (wParam == WM_KEYUP)
+                {
+                    if (_keyStatus.Contains(keyString))
+                    {
+                        _keyStatus.Remove(keyString);
+                        isKeyUp = true;
+                    }
+                }
+
+                if (!isKeyDown && !isKeyUp)
+                {
+                    // 如果只是Holding事件 则直接结束
+                    return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
+                }
+
+
+                // invoke methods
+                foreach (KeyValuePair<int, GlobalKeyHandler> pair in _invokeMethods)
+                {
+                    bool handlerResult = pair.Value(keyString, isKeyDown, isKeyUp);
+                    if (! handlerResult)
+                    {
+                        // 如果GlobalKeyHandler返回了false 则阻止它激活接下来的逻辑
+                        return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
                     }
                 }
 
                 #region 功能键按压情况
                 if (keyString == Key.CONTROL || keyString == Key.LCONTROL || keyString == Key.RCONTROL)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _ctrlHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_ctrlHolding > 0)
                         {
@@ -115,11 +190,11 @@ namespace SuperIo
                 }
                 if (keyString == Key.MENU || keyString == Key.LMENU || keyString == Key.RMENU)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _altHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_altHolding > 0)
                         {
@@ -129,11 +204,11 @@ namespace SuperIo
                 }
                 if (keyString == Key.SHIFT || keyString == Key.LSHIFT || keyString == Key.RSHIFT)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _shiftHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_shiftHolding > 0)
                         {
@@ -151,21 +226,13 @@ namespace SuperIo
                           (handler.Shift && _shiftHolding == 0)))
                     {
                         // 如果应当按下的功能键没有按下 那么此handler实际上没有被激活 反之 就是激活了
-                        if (wParam == WM_KEYDOWN)//检测到键盘按下
+                        if (isKeyDown)//检测到键盘按下
                         {
-                            if (!handler.IsDown)
-                            {
-                                handler.IsDown = true;
-                                handler.OnKeyDown();
-                            }
+                            handler.OnKeyDown();
                         }
-                        if (wParam == WM_KEYUP)//检测到键盘抬起
+                        if (isKeyUp)//检测到键盘抬起
                         {
-                            if (handler.IsDown)
-                            {
-                                handler.IsDown = false;
-                                handler.OnKeyUp();
-                            }
+                            handler.OnKeyUp();
                         }
                     }
                 }
@@ -174,17 +241,7 @@ namespace SuperIo
                                                                                         //递给下一个钩子
         }
 
-        public delegate void KeyHookHandler();
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class KeyHookHandlerStruct {
-            public bool IsDown = false;
-            public bool Ctrl = false;
-            public bool Alt = false;
-            public bool Shift = false;
-            public KeyHookHandler OnKeyDown;
-            public KeyHookHandler OnKeyUp;
-        }
+        
 
         /// <summary>
         /// <para>Register a key hook.</para>
@@ -193,8 +250,10 @@ namespace SuperIo
         /// <param name="keyString">Key that will trigger the handler</param>
         /// <param name="handler">Handler</param>
         /// <returns>Return false if given key is already exists.</returns>
-        public bool Register(string keyString, KeyHookHandlerStruct handler)
+        public static bool Register(string keyString, KeyHookHandlerStruct handler)
         {
+            CheckInitialization();
+
             if (_registeredHooks.ContainsKey(keyString))
             {
                 return false;
@@ -210,8 +269,10 @@ namespace SuperIo
         /// <param name="keyDownHandler">Key down handler</param>
         /// <param name="keyUpHandler">Key up handler</param>
         /// <returns></returns>
-        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler)
+        public static bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler)
         {
+            CheckInitialization();
+
             return Register(keyString, new KeyHookHandlerStruct()
             {
                 OnKeyDown = keyDownHandler,
@@ -229,9 +290,11 @@ namespace SuperIo
         /// <param name="alt"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
-        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler,
+        public static bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler,
             bool ctrl = false, bool alt = false, bool shift = false)
         {
+            CheckInitialization();
+
             return Register(keyString, new KeyHookHandlerStruct()
             {
                 Ctrl = ctrl,
@@ -246,23 +309,24 @@ namespace SuperIo
         /// </summary>
         /// <param name="keyString"></param>
         /// <returns></returns>
-        public bool Unregister(string keyString)
+        public static bool Unregister(string keyString)
         {
+            CheckInitialization();
+
             return _registeredHooks.Remove(keyString);
         }
 
-        public delegate bool GlobalKeyHandler(string keyString, bool isKeyDown, bool isKeyUp);
 
-        private Dictionary<int,GlobalKeyHandler> _invokeMethods = new Dictionary<int,GlobalKeyHandler>();
-        private int _invokeId = 0;
 
         /// <summary>
         /// Add a global key handler. Which will triggered everytime user press a key.
         /// </summary>
         /// <param name="newHandler"></param>
         /// <returns>handler id</returns>
-        public int AddGlobalKeyHandler(GlobalKeyHandler newHandler)
+        public static int AddGlobalKeyHandler(GlobalKeyHandler newHandler)
         {
+            CheckInitialization();
+
             int newInvokeId = _invokeId;
             _invokeId++;
             _invokeMethods.Add(newInvokeId, newHandler);
@@ -273,9 +337,20 @@ namespace SuperIo
         /// </summary>
         /// <param name="handlerId"></param>
         /// <returns>Return false if handler which handlerId specified is not exists.</returns>
-        public bool RemoveGlobalKeyHandler(int handlerId)
+        public static bool RemoveGlobalKeyHandler(int handlerId)
         {
+            CheckInitialization();
+
             return _invokeMethods.Remove(handlerId);
+        }
+        /// <summary>
+        /// Remove all global key handlers.
+        /// </summary>
+        public static void RemoveAllGlobalKeyHandlers()
+        {
+            CheckInitialization();
+
+            _invokeMethods.Clear();
         }
 
         public static class Key

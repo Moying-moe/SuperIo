@@ -22,9 +22,6 @@ namespace SuperIoTestProgram
     /// </summary>
     public partial class MainWindow : Window
     {
-        SuperKeyHook hotkey = new SuperKeyHook();
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -56,9 +53,8 @@ namespace SuperIoTestProgram
             {
                 DebugLog();
 
-                bool flagKb = SuperKeyboard.Initialize();
-                // I highly recommand you to initialize these module when the program start in a 
-                // production environment. Instead of when you want to use it.
+                bool flagKb = SuperKeyboard.IsInitialized;
+                
 
                 DebugLog("SuperKeyboard initialize: " + flagKb);
                 if (flagKb)
@@ -75,7 +71,7 @@ namespace SuperIoTestProgram
                     Thread.Sleep(1000);
 
                     DebugLog("- input Shift+M");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.CmdKey.SHIFT);
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.ModKey.SHIFT);
                     // or
                     //SuperKeyboard.KeyCombSeq(25, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_M);
                     Thread.Sleep(1000);
@@ -89,7 +85,7 @@ namespace SuperIoTestProgram
                     Thread.Sleep(1000);
 
                     DebugLog("- press Ctrl+Alt+A");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.CmdKey.CTRL | SuperKeyboard.CmdKey.ALT);
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.ModKey.CTRL | SuperKeyboard.ModKey.ALT);
                     Thread.Sleep(1000);
 
                     DebugLog("SuperKeyboard Test done.");
@@ -103,7 +99,7 @@ namespace SuperIoTestProgram
             {
                 DebugLog();
 
-                bool flagMs = SuperMouse.Initialize();
+                bool flagMs = SuperMouse.IsInitialized;
                 DebugLog("SuperMouse initialize: " + flagMs);
 
                 if (flagMs)
@@ -141,36 +137,67 @@ namespace SuperIoTestProgram
         {
             DebugLog();
 
-            Color color = SuperScreen.GetPixelColor(960, 540);
-            DebugLog("Color at (960,540) is: " + color.R + "," + color.G + "," + color.B);
-            Color black = Color.FromArgb(0, 0, 0);
-            DebugLog("Difference between this color * (0,0,0) is: " + SuperScreen.ColorDifference(color, black));
+            bool flagSc = SuperScreen.IsInitialized;
+            DebugLog("SuperScreen initialize: " + flagSc); 
+
+            if (flagSc)
+            {
+                Color color = SuperScreen.GetPixelColor(960, 540);
+                DebugLog("Color at (960,540) is: " + color.R + "," + color.G + "," + color.B);
+                Color black = Color.FromArgb(0, 0, 0);
+                DebugLog("Difference between this color * (0,0,0) is: " + SuperScreen.ColorDifference(color, black));
+
+                System.Drawing.Point pos = SuperScreen.SearchColor(black, SuperScreen.SearchDirection.FromLeftTop);
+                DebugLog("Find color * (0,0,0) in Position (" + pos.X + "," + pos.Y + ")");
+                if (SuperMouse.IsInitialized)
+                {
+                    SuperMouse.MoveTo(pos.X, pos.Y);
+                }
+            }
         }
 
         private void BtnKeyHook_Click(object sender, RoutedEventArgs e)
         {
             DebugLog();
-            hotkey.Register(
-                SuperKeyHook.Key.Q,
-                delegate () {
-                    DebugLog("down: Ctrl+Q");
-                },
-                delegate ()
-                {
-                    DebugLog("up: Ctrl+Q");
-                },
-                ctrl: true
-            );
 
-            hotkey.AddGlobalKeyHandler(
-                delegate (string keyString, bool isKeyDown, bool isKeyUp)
-                {
-                    DebugLog("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
-                    return true;
-                }
-            );
+            bool flagKh = SuperKeyHook.IsInitialized;
+            DebugLog("SuperKeyHook initialize: " + flagKh);
 
-            DebugLog("Hooked on \"Ctrl+Q\".");
+            if (flagKh)
+            {
+                SuperKeyHook.Register(
+                    ctrl: true,
+                    keyString: SuperKeyHook.Key.Q,
+                    keyDownHandler: delegate ()
+                    {
+                        DebugLog("down: Ctrl+Q");
+                    },
+                    keyUpHandler: delegate ()
+                    {
+                        DebugLog("up: Ctrl+Q");
+                    }
+                );
+                DebugLog("Hooked on \"Ctrl+Q\".");
+
+                SuperKeyHook.AddGlobalKeyHandler(
+                    delegate (string keyString, bool isKeyDown, bool isKeyUp)
+                    {
+                        DebugLog("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
+                        return true;
+                    }
+                );
+
+            }
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SuperIo.SuperIo.Dispose();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SuperIo.SuperIo.Initialize();
         }
     }
 }
