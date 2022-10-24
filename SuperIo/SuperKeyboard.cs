@@ -13,6 +13,8 @@ namespace SuperIo
         private static bool _initialized = false;        // 模块是否已经初始化
         private static int _keyPressDelay = 50;        // 调用KeyPress时，按下到弹起的时间间隔
 
+        public static bool IsInitialized { get => _initialized; }
+
         #region ArgumentsSetup
         /// <summary>
         /// Initialize the SuperKeyboard module.

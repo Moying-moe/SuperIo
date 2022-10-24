@@ -65,6 +65,8 @@ namespace SuperIo
 
         private static bool _initialized = false;        // 模块是否已经初始化
 
+        public static bool IsInitialized { get => _initialized; }
+
         private static int _setWindowsHookExReturnKeyBoard;
         private static HOOKPROC _keyBoard;
         private static int _invokeId = 0;

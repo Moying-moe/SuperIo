@@ -21,8 +21,9 @@ namespace SuperIo
         {
             bool keyboardFlag = SuperKeyboard.Initialize();
             bool mouseFlag = SuperMouse.Initialize();
+            bool screenFlag = SuperScreen.Initialize();
             bool keyhookFlag = SuperKeyHook.Initialize();
-            return keyboardFlag && mouseFlag && keyhookFlag;
+            return keyboardFlag && mouseFlag && screenFlag && keyhookFlag;
         }
 
         /// <summary>
