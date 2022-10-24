@@ -1,0 +1,1081 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SuperIo</name>
+    </assembly>
+    <members>
+        <member name="M:SuperIo.SuperKeyboard.Initialize">
+            <summary>
+            Initialize the SuperKeyboard module.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.GetKeyPressDelay">
+            <summary>
+            The delay between a key's *down* and *up* when method `KeyPress` is called.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.SetKeyPressDelay(System.Int32)">
+            <summary>
+            The delay between a key's *down* and *up* when method `KeyPress` is called.
+            </summary>
+            <param name="delay">New delay</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyDown(System.Byte)">
+            <summary>
+            Press down the key.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyUp(System.Byte)">
+            <summary>
+            Release the key.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte)">
+            <summary>
+            Press the key one time.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte,System.Int32)">
+            <summary>
+            Press the key one time.
+            <para>With keys in argument `with` holding.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+            <param name="with">CmdKey flag(s).</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Byte[])">
+            <summary>
+            Apply key combination sequence
+            <para>For example. If the given sequence is: [A,B,C,D].</para>
+            <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+            <para>Finally, release these keys in order D,C,B,A</para>
+            <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Int32,System.Byte[])">
+            <summary>
+            Apply key combination sequence
+            <para>For example. If the given sequence is: [A,B,C,D].</para>
+            <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+            <para>Finally, release these keys in order D,C,B,A</para>
+            <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+            <param name="interval">Interval between two keys.</param>
+        </member>
+        <member name="T:SuperIo.SuperKeyboard.CmdKey">
+            <summary>
+            Command Keys
+            </summary>
+        </member>
+        <member name="T:SuperIo.SuperKeyboard.Key">
+            <summary>
+            <para>Key code</para>
+            <para>Some may not work depend on your physical device type.</para>
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_LBUTTON">
+            <summary>
+            鼠标左键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_RBUTTON">
+            <summary>
+            鼠标右键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_CANCEL">
+            <summary>
+            Cancel
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_MBUTTON">
+            <summary>
+            鼠标中键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_XBUTTON1">
+            <summary>
+            鼠标后退键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_XBUTTON2">
+            <summary>
+            鼠标前进键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_BACK">
+            <summary>
+            Backspace
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_TAB">
+            <summary>
+            Tab
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_CLEAR">
+            <summary>
+            Clear
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_RETURN">
+            <summary>
+            Enter
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SHIFT">
+            <summary>
+            Shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_CONTROL">
+            <summary>
+            Ctrl
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_MENU">
+            <summary>
+            Alt
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_PAUSE">
+            <summary>
+            Pause
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_CAPITAL">
+            <summary>
+            Caps Lock
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_ESCAPE">
+            <summary>
+            Esc
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SPACE">
+            <summary>
+            Space
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_PRIOR">
+            <summary>
+            Page Up
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NEXT">
+            <summary>
+            Page Down
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_END">
+            <summary>
+            End
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_HOME">
+            <summary>
+            Home
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_LEFT">
+            <summary>
+            Left Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_UP">
+            <summary>
+            Up Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_RIGHT">
+            <summary>
+            Right Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_DOWN">
+            <summary>
+            Down Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SELECT">
+            <summary>
+            Select
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_PRINT">
+            <summary>
+            Print
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_EXECUTE">
+            <summary>
+            Execute
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SNAPSHOT">
+            <summary>
+            Snapshot
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_INSERT">
+            <summary>
+            Insert
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_DELETE">
+            <summary>
+            Delete
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_HELP">
+            <summary>
+            Help
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_LWIN">
+            <summary>
+            左WIN键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_RWIN">
+            <summary>
+            右WIN键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_APPS">
+            <summary>
+            应用程序键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SLEEP">
+            <summary>
+            睡眠键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD0">
+            <summary>
+            小键盘 0
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD1">
+            <summary>
+            小键盘 1
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD2">
+            <summary>
+            小键盘 2
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD3">
+            <summary>
+            小键盘 3
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD4">
+            <summary>
+            小键盘 4
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD5">
+            <summary>
+            小键盘 5
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD6">
+            <summary>
+            小键盘 6
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD7">
+            <summary>
+            小键盘 7
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD8">
+            <summary>
+            小键盘 8
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMPAD9">
+            <summary>
+            小键盘 9
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_MULTIPLY">
+            <summary>
+            小键盘 *
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_ADD">
+            <summary>
+            小键盘 +
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SEPARATOR">
+            <summary>
+            小键盘 Enter
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SUBTRACT">
+            <summary>
+            小键盘 -
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_DECIMAL">
+            <summary>
+            小键盘 .
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_DIVIDE">
+            <summary>
+            小键盘 /
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F1">
+            <summary>
+            F1
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F2">
+            <summary>
+            F2
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F3">
+            <summary>
+            F3
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F4">
+            <summary>
+            F4
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F5">
+            <summary>
+            F5
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F6">
+            <summary>
+            F6
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F7">
+            <summary>
+            F7
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F8">
+            <summary>
+            F8
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F9">
+            <summary>
+            F9
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F10">
+            <summary>
+            F10
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F11">
+            <summary>
+            F11
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_F12">
+            <summary>
+            F12
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_NUMLOCK">
+            <summary>
+            Num Lock
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_SCROLL">
+            <summary>
+            Scroll
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_LSHIFT">
+            <summary>
+            左shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_RSHIFT">
+            <summary>
+            右shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_VOLUME_MUTE">
+            <summary>
+            VolumeMute
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_VOLUME_DOWN">
+            <summary>
+            VolumeDown
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_VOLUME_UP">
+            <summary>
+            VolumeUp
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_1">
+            <summary>
+            ; :
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_PLUS">
+            <summary>
+            = +
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_COMMA">
+            <summary>
+            ,
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_MINUS">
+            <summary>
+            - _
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_PERIOD">
+            <summary>
+            .
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_2">
+            <summary>
+            / ?
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_3">
+            <summary>
+            ` ~
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_4">
+            <summary>
+            [ {
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_5">
+            <summary>
+            \ |
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_6">
+            <summary>
+            ] }
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyboard.Key.VK_OEM_7">
+            <summary>
+            ' "
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.#ctor">
+            <summary>
+            Create Key Hook object.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandlerStruct)">
+            <summary>
+            <para>Register a key hook.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keyString">Key that will trigger the handler</param>
+            <param name="handler">Handler</param>
+            <returns>Return false if given key is already exists.</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandler,SuperIo.SuperKeyHook.KeyHookHandler)">
+            <summary>
+            Register a key hook.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keyString">Key that will trigger the handler</param>
+            <param name="keyDownHandler">Key down handler</param>
+            <param name="keyUpHandler">Key up handler</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandler,SuperIo.SuperKeyHook.KeyHookHandler,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Register a key hook.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keyString">Key that will trigger the handler</param>
+            <param name="keyDownHandler">Key down handler</param>
+            <param name="keyUpHandler">Key up handler</param>
+            <param name="ctrl"></param>
+            <param name="alt"></param>
+            <param name="shift"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Unregister(System.String)">
+            <summary>
+            Unregister an exist key hook.
+            </summary>
+            <param name="keyString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.AddGlobalKeyHandler(SuperIo.SuperKeyHook.GlobalKeyHandler)">
+            <summary>
+            Add a global key handler. Which will triggered everytime user press a key.
+            </summary>
+            <param name="newHandler"></param>
+            <returns>handler id</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.RemoveGlobalKeyHandler(System.Int32)">
+            <summary>
+            Remove a global key handler with its id.
+            </summary>
+            <param name="handlerId"></param>
+            <returns>Return false if handler which handlerId specified is not exists.</returns>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.BACK">
+            <summary>
+            Backspace
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.TAB">
+            <summary>
+            Tab
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.RETURN">
+            <summary>
+            Enter
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SHIFT">
+            <summary>
+            Shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.CONTROL">
+            <summary>
+            Ctrl
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.MENU">
+            <summary>
+            Alt
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.PAUSE">
+            <summary>
+            Pause
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.CAPITAL">
+            <summary>
+            Caps Lock
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.ESCAPE">
+            <summary>
+            Esc
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SPACE">
+            <summary>
+            Space
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.PRIOR">
+            <summary>
+            Page Up
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NEXT">
+            <summary>
+            Page Down
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.END">
+            <summary>
+            End
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.HOME">
+            <summary>
+            Home
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.LEFT">
+            <summary>
+            Left Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.UP">
+            <summary>
+            Up Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.RIGHT">
+            <summary>
+            Right Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.DOWN">
+            <summary>
+            Down Arrow
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SELECT">
+            <summary>
+            Select
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.PRINT">
+            <summary>
+            Print
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.EXECUTE">
+            <summary>
+            Execute
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SNAPSHOT">
+            <summary>
+            Snapshot
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.INSERT">
+            <summary>
+            Insert
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.DELETE">
+            <summary>
+            Delete
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.HELP">
+            <summary>
+            Help
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.LWIN">
+            <summary>
+            左WIN键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.RWIN">
+            <summary>
+            右WIN键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.APPS">
+            <summary>
+            应用程序键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SLEEP">
+            <summary>
+            睡眠键
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD0">
+            <summary>
+            小键盘 0
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD1">
+            <summary>
+            小键盘 1
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD2">
+            <summary>
+            小键盘 2
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD3">
+            <summary>
+            小键盘 3
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD4">
+            <summary>
+            小键盘 4
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD5">
+            <summary>
+            小键盘 5
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD6">
+            <summary>
+            小键盘 6
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD7">
+            <summary>
+            小键盘 7
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD8">
+            <summary>
+            小键盘 8
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMPAD9">
+            <summary>
+            小键盘 9
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.MULTIPLY">
+            <summary>
+            小键盘 *
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.ADD">
+            <summary>
+            小键盘 +
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SEPARATOR">
+            <summary>
+            小键盘 Enter
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SUBTRACT">
+            <summary>
+            小键盘 -
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.DECIMAL">
+            <summary>
+            小键盘 .
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.DIVIDE">
+            <summary>
+            小键盘 /
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F1">
+            <summary>
+            F1
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F2">
+            <summary>
+            F2
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F3">
+            <summary>
+            F3
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F4">
+            <summary>
+            F4
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F5">
+            <summary>
+            F5
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F6">
+            <summary>
+            F6
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F7">
+            <summary>
+            F7
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F8">
+            <summary>
+            F8
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F9">
+            <summary>
+            F9
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F10">
+            <summary>
+            F10
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F11">
+            <summary>
+            F11
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.F12">
+            <summary>
+            F12
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.NUMLOCK">
+            <summary>
+            Num Lock
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.SCROLL">
+            <summary>
+            Scroll
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.LSHIFT">
+            <summary>
+            左shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.RSHIFT">
+            <summary>
+            右shift
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_1">
+            <summary>
+            ; :
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_PLUS">
+            <summary>
+            = +
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_COMMA">
+            <summary>
+            ,
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_MINUS">
+            <summary>
+            - _
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_PERIOD">
+            <summary>
+            .
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_2">
+            <summary>
+            / ?
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_3">
+            <summary>
+            ` ~
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_4">
+            <summary>
+            [ {
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_5">
+            <summary>
+            \ |
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_6">
+            <summary>
+            ] }
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperKeyHook.Key.OEM_7">
+            <summary>
+            ' "
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Initialize">
+            <summary>
+            Initialize the SuperMouse module.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Initialize(System.Int32,System.Int32)">
+            <summary>
+            <para>Initialize the SuperMouse module.</para>
+            <para>If auto initialization get the wrong screen size, or you have multiple monitor. Please call this method.</para>
+            </summary>
+            <param name="_screenWidth">screen width</param>
+            <param name="_screenHeight">screen height</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.GetMultClickDelay">
+            <summary>
+            Delay between two clicks (or more).
+            </summary>
+            <returns>Multiple Click Delay</returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.SetMultClickDelay(System.Int32)">
+            <summary>
+            Delay between two clicks (or more).
+            </summary>
+            <param name="delay">New delay</param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MoveRelative(System.Int32,System.Int32)">
+            <summary>
+            Move mouse relatively.
+            </summary>
+            <param name="dx"></param>
+            <param name="dy"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MoveTo(System.Int32,System.Int32)">
+            <summary>
+            Move mouse to the absolute position (x,y)
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonDown">
+            <summary>
+            Left button presses down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonUp">
+            <summary>
+            Left button releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonClick">
+            <summary>
+            Left button clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonClick(System.Int32)">
+            <summary>
+            Left button clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonDown">
+            <summary>
+            Right button presses down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonUp">
+            <summary>
+            Right button releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonClick">
+            <summary>
+            Right button clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonClick(System.Int32)">
+            <summary>
+            Right button clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonDown">
+            <summary>
+            Middle button(mouse wheel) pressed down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonUp">
+            <summary>
+            Middle button(mouse wheel) releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonClick">
+            <summary>
+            Middle button(mouse wheel) clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonClick(System.Int32)">
+            <summary>
+            Middle button(mouse wheel) clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Scroll(System.Int32)">
+            <summary>
+            Mouse wheel scrolls up or down. Depends on value given.
+            </summary>
+            <param name="value">Scroll up if value is positive. Down if negative</param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.ScrollUp">
+            <summary>
+            Simply scroll up.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.ScrollDown">
+            <summary>
+            Simply scroll down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperScreen.GetPixelColor(System.Int32,System.Int32)">
+            <summary>
+            Get the color of the pixel at (x,y)
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.ColorDifference(System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            <para>Return the color distance between 2 colors.</para>
+            <para>Formula: Diff = (R1 - R2)^2 + (G1 - G2)^2 + (B1 - B2)^2 / (255^2 * 3)</para>
+            </summary>
+            <param name="c1"></param>
+            <param name="c2"></param>
+            <returns>Difference. Range from 0 to 1.</returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.IsColorAt(System.Int32,System.Int32,System.Drawing.Color)">
+            <summary>
+            <para>Return if the pixel at (x, y) is the same color as argument `target` given.</para>
+            <para>Equivalent to `IsColorAt(x, y, target, 1.0d)`</para>
+            </summary>
+            <param name="x">Pixel position x</param>
+            <param name="y">Pixel position y</param>
+            <param name="target">Color for comparison</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.IsColorAt(System.Int32,System.Int32,System.Drawing.Color,System.Double)">
+            <summary>
+            Return if the pixel at (x, y) is similar to the color that argument `target` given.
+            </summary>
+            <param name="x">Pixel position x</param>
+            <param name="y">Pixel position y</param>
+            <param name="target">Color for comparison</param>
+            <param name="similarity">Color similarity limit. Range from 0 to 1. (1 means just the same color)</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.Tools.GetSreenRealSize">
+            <summary>
+            Get the actual size of the primary screen. Regardless of the *Screen Scale*.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
