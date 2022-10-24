@@ -74,12 +74,22 @@ namespace SuperIoTestProgram
                     SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_B);
                     Thread.Sleep(1000);
 
+                    DebugLog("- input Shift+M");
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.CmdKey.SHIFT);
+                    // or
+                    //SuperKeyboard.KeyCombSeq(25, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_M);
+                    Thread.Sleep(1000);
+
                     DebugLog("- input C");
                     SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_C);
                     Thread.Sleep(1000);
 
                     DebugLog("- backspace");
                     SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_BACK);
+                    Thread.Sleep(1000);
+
+                    DebugLog("- press Ctrl+Alt+A");
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.CmdKey.CTRL | SuperKeyboard.CmdKey.ALT);
                     Thread.Sleep(1000);
 
                     DebugLog("SuperKeyboard Test done.");

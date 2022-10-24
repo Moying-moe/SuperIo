@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SuperIo</name>
+    </assembly>
+    <members>
+        <member name="M:SuperIo.SuperKeyboard.Initialize">
+            <summary>
+            Initialize the SuperKeyboard module.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.GetKeyPressDelay">
+            <summary>
+            The delay between a key's *down* and *up* when method `KeyPress` is called.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.SetKeyPressDelay(System.Int32)">
+            <summary>
+            The delay between a key's *down* and *up* when method `KeyPress` is called.
+            </summary>
+            <param name="delay">New delay</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyDown(System.Byte)">
+            <summary>
+            Press down the key.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyUp(System.Byte)">
+            <summary>
+            Release the key.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte)">
+            <summary>
+            Press the key one time.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte,System.Int32)">
+            <summary>
+            Press the key one time.
+            <para>With keys in argument `with` holding.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+            <param name="with">CmdKey flag(s).</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Byte[])">
+            <summary>
+            Apply key combination sequence
+            <para>For example. If the given sequence is: [A,B,C,D].</para>
+            <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+            <para>Finally, release these keys in order D,C,B,A</para>
+            <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+        </member>
+        <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Int32,System.Byte[])">
+            <summary>
+            Apply key combination sequence
+            <para>For example. If the given sequence is: [A,B,C,D].</para>
+            <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+            <para>Finally, release these keys in order D,C,B,A</para>
+            <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+            <param name="interval">Interval between two keys.</param>
+        </member>
+        <member name="T:SuperIo.SuperKeyboard.CmdKey">
+            <summary>
+            Command Keys
+            </summary>
+        </member>
+        <member name="T:SuperIo.SuperKeyboard.Key">
+            <summary>
+            <para>Key code</para>
+            <para>Some may not work depend on your physical device type.</para>
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.#ctor">
+            <summary>
+            Create Key Hook object.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandlerStruct)">
+            <summary>
+            <para>Register a key hook.</para>
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keyString">Key that will trigger the handler</param>
+            <param name="handler">Handler</param>
+            <returns>Return false if given key is already exists.</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandler,SuperIo.SuperKeyHook.KeyHookHandler)">
+            <summary>
+            Register a key hook.
+            <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+            </summary>
+            <param name="keyString">Key that will trigger the handler</param>
+            <param name="keyDownHandler">Key down handler</param>
+            <param name="keyUpHandler">Key up handler</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Initialize">
+            <summary>
+            Initialize the SuperMouse module.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Initialize(System.Int32,System.Int32)">
+            <summary>
+            <para>Initialize the SuperMouse module.</para>
+            <para>If auto initialization get the wrong screen size, or you have multiple monitor. Please call this method.</para>
+            </summary>
+            <param name="_screenWidth">screen width</param>
+            <param name="_screenHeight">screen height</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.GetMultClickDelay">
+            <summary>
+            Delay between two clicks (or more).
+            </summary>
+            <returns>Multiple Click Delay</returns>
+        </member>
+        <member name="M:SuperIo.SuperMouse.SetMultClickDelay(System.Int32)">
+            <summary>
+            Delay between two clicks (or more).
+            </summary>
+            <param name="delay">New delay</param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MoveRelative(System.Int32,System.Int32)">
+            <summary>
+            Move mouse relatively.
+            </summary>
+            <param name="dx"></param>
+            <param name="dy"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MoveTo(System.Int32,System.Int32)">
+            <summary>
+            Move mouse to the absolute position (x,y)
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonDown">
+            <summary>
+            Left button presses down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonUp">
+            <summary>
+            Left button releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonClick">
+            <summary>
+            Left button clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.LButtonClick(System.Int32)">
+            <summary>
+            Left button clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonDown">
+            <summary>
+            Right button presses down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonUp">
+            <summary>
+            Right button releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonClick">
+            <summary>
+            Right button clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.RButtonClick(System.Int32)">
+            <summary>
+            Right button clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonDown">
+            <summary>
+            Middle button(mouse wheel) pressed down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonUp">
+            <summary>
+            Middle button(mouse wheel) releases.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonClick">
+            <summary>
+            Middle button(mouse wheel) clicks.(one time)
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.MButtonClick(System.Int32)">
+            <summary>
+            Middle button(mouse wheel) clicks multiple times.
+            </summary>
+            <param name="times"></param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.Scroll(System.Int32)">
+            <summary>
+            Mouse wheel scrolls up or down. Depends on value given.
+            </summary>
+            <param name="value">Scroll up if value is positive. Down if negative</param>
+        </member>
+        <member name="M:SuperIo.SuperMouse.ScrollUp">
+            <summary>
+            Simply scroll up.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperMouse.ScrollDown">
+            <summary>
+            Simply scroll down.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperScreen.GetPixelColor(System.Int32,System.Int32)">
+            <summary>
+            Get the color of the pixel at (x,y)
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.ColorDifference(System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            <para>Return the color distance between 2 colors.</para>
+            <para>Formula: Diff = (R1 - R2)^2 + (G1 - G2)^2 + (B1 - B2)^2 / (255^2 * 3)</para>
+            </summary>
+            <param name="c1"></param>
+            <param name="c2"></param>
+            <returns>Difference. Range from 0 to 1.</returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.IsColorAt(System.Int32,System.Int32,System.Drawing.Color)">
+            <summary>
+            <para>Return if the pixel at (x, y) is the same color as argument `target` given.</para>
+            <para>Equivalent to `IsColorAt(x, y, target, 1.0d)`</para>
+            </summary>
+            <param name="x">Pixel position x</param>
+            <param name="y">Pixel position y</param>
+            <param name="target">Color for comparison</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperScreen.IsColorAt(System.Int32,System.Int32,System.Drawing.Color,System.Double)">
+            <summary>
+            Return if the pixel at (x, y) is similar to the color that argument `target` given.
+            </summary>
+            <param name="x">Pixel position x</param>
+            <param name="y">Pixel position y</param>
+            <param name="target">Color for comparison</param>
+            <param name="similarity">Color similarity limit. Range from 0 to 1. (1 means just the same color)</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.Tools.GetSreenRealSize">
+            <summary>
+            Get the actual size of the primary screen. Regardless of the *Screen Scale*.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

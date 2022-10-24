@@ -90,6 +90,145 @@ namespace SuperIo
         }
 
         /// <summary>
+        /// Press the key one time.
+        /// <para>With keys in argument `with` holding.</para>
+        /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+        /// </summary>
+        /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
+        /// <param name="with">CmdKey flag(s).</param>
+        public static void KeyPress(byte keycode, int with)
+        {
+            CheckInitialization();
+
+            bool ctrl = (with & CmdKey.CTRL) > 0;
+            bool alt = (with & CmdKey.ALT) > 0;
+            bool shift = (with & CmdKey.SHIFT) > 0;
+            bool rctrl = (with & CmdKey.R_CTRL) > 0;
+            bool ralt = (with & CmdKey.R_ALT) > 0;
+            bool rshift = (with & CmdKey.R_SHIFT) > 0;
+            bool hasWith = ctrl || alt || shift || rctrl || ralt || rshift;
+
+            if (hasWith)
+            {
+                if (ctrl)
+                {
+                    WinRing0.KeyDown(Key.VK_LCONTROL);
+                }
+                if (alt)
+                {
+                    WinRing0.KeyDown(Key.VK_LMENU);
+                }
+                if (shift)
+                {
+                    WinRing0.KeyDown(Key.VK_LSHIFT);
+                }
+                if (rctrl)
+                {
+                    WinRing0.KeyDown(Key.VK_RCONTROL);
+                }
+                if (ralt)
+                {
+                    WinRing0.KeyDown(Key.VK_RMENU);
+                }
+                if (rshift)
+                {
+                    WinRing0.KeyDown(Key.VK_RSHIFT);
+                }
+
+                Thread.Sleep(_keyPressDelay);
+            }
+
+            WinRing0.KeyDown(keycode);
+            Thread.Sleep(_keyPressDelay);
+            WinRing0.KeyUp(keycode);
+
+            if (hasWith)
+            {
+                Thread.Sleep(_keyPressDelay);
+
+                if (ctrl)
+                {
+                    WinRing0.KeyUp(Key.VK_LCONTROL);
+                }
+                if (alt)
+                {
+                    WinRing0.KeyUp(Key.VK_LMENU);
+                }
+                if (shift)
+                {
+                    WinRing0.KeyUp(Key.VK_LSHIFT);
+                }
+                if (rctrl)
+                {
+                    WinRing0.KeyUp(Key.VK_RCONTROL);
+                }
+                if (ralt)
+                {
+                    WinRing0.KeyUp(Key.VK_RMENU);
+                }
+                if (rshift)
+                {
+                    WinRing0.KeyUp(Key.VK_RSHIFT);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply key combination sequence
+        /// <para>For example. If the given sequence is: [A,B,C,D].</para>
+        /// <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+        /// <para>Finally, release these keys in order D,C,B,A</para>
+        /// <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+        /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+        /// </summary>
+        /// <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+        public static void KeyCombSeq(params byte[] keycodes)
+        {
+            KeyCombSeq(_keyPressDelay, keycodes);
+        }
+
+        /// <summary>
+        /// Apply key combination sequence
+        /// <para>For example. If the given sequence is: [A,B,C,D].</para>
+        /// <para>It will press down A, then press down B (with the A holding, the same goes for the following), then C, and then D.</para>
+        /// <para>Finally, release these keys in order D,C,B,A</para>
+        /// <para>If argument `interval` is not given, it will be set to `KeyPressDelay` as default.</para>
+        /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+        /// </summary>
+        /// <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
+        /// <param name="interval">Interval between two keys.</param>
+        public static void KeyCombSeq(int interval, params byte[] keycodes)
+        {
+            int count = keycodes.Length;
+            for (int i = 0; i < count; i++)
+            {
+                WinRing0.KeyDown(keycodes[i]);
+                Thread.Sleep(interval);
+            }
+            for (int i = count - 1; i >= 0; i--)
+            {
+                WinRing0.KeyUp(keycodes[i]);
+                if (i != 0)
+                {
+                    Thread.Sleep(interval);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Command Keys
+        /// </summary>
+        public static class CmdKey
+        {
+            public static readonly int CTRL    = 0b000001;
+            public static readonly int ALT     = 0b000010;
+            public static readonly int SHIFT   = 0b000100;
+            public static readonly int R_CTRL  = 0b001000;
+            public static readonly int R_ALT   = 0b010000;
+            public static readonly int R_SHIFT = 0b100000;
+        }
+
+        /// <summary>
         /// <para>Key code</para>
         /// <para>Some may not work depend on your physical device type.</para>
         /// </summary>
