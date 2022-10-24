@@ -146,6 +146,15 @@ namespace SuperIo
                 OnKeyUp = keyUpHandler
             });
         }
+        /// <summary>
+        /// Unregister an exist key hook.
+        /// </summary>
+        /// <param name="keyString"></param>
+        /// <returns></returns>
+        public bool Unregister(string keyString)
+        {
+            return _registeredHooks.Remove(keyString);
+        }
 
         public static class Key
         {
