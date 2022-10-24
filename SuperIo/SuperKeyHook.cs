@@ -149,31 +149,106 @@ namespace SuperIo
 
         public static class Key
         {
-            public static readonly string BACK = "Back";                // Backspace
-            public static readonly string TAB = "Tab";                  // Tab
-            public static readonly string RETURN = "Return";            // Enter
-            public static readonly string SHIFT = "LeftShift";          // Shift
-            public static readonly string CONTROL = "LeftCtrl";         // Ctrl
-            public static readonly string MENU = "LeftAlt";             // Alt
-            public static readonly string PAUSE = "Pause";              // Pause
-            public static readonly string CAPITAL = "Capital";          // Caps Lock
-            public static readonly string ESCAPE = "Escape";            // Esc
-            public static readonly string SPACE = "Space";              // Space
-            public static readonly string PRIOR = "PageUp";             // Page Up
-            public static readonly string NEXT = "Next";                // Page Down
-            public static readonly string END = "End";                  // End
-            public static readonly string HOME = "Home";                // Home
-            public static readonly string LEFT = "Left";                // Left Arrow
-            public static readonly string UP = "Up";                    // Up Arrow
-            public static readonly string RIGHT = "Right";              // Right Arrow
-            public static readonly string DOWN = "Down";                // Down Arrow
-            public static readonly string SELECT = "Select";            // Select
-            public static readonly string PRINT = "Print";              // Print
-            public static readonly string EXECUTE = "Execute";          // Execute
-            public static readonly string SNAPSHOT = "Snapshot";        // Snapshot
-            public static readonly string INSERT = "Insert";            // Insert
-            public static readonly string DELETE = "Delete";            // Delete
-            public static readonly string HELP = "Help";                // Help
+            /// <summary>
+            /// Backspace
+            /// </summary>
+            public static readonly string BACK = "Back";
+            /// <summary>
+            /// Tab
+            /// </summary>
+            public static readonly string TAB = "Tab";
+            /// <summary>
+            /// Enter
+            /// </summary>
+            public static readonly string RETURN = "Return";
+            /// <summary>
+            /// Shift
+            /// </summary>
+            public static readonly string SHIFT = "LeftShift";
+            /// <summary>
+            /// Ctrl
+            /// </summary>
+            public static readonly string CONTROL = "LeftCtrl";
+            /// <summary>
+            /// Alt
+            /// </summary>
+            public static readonly string MENU = "LeftAlt";
+            /// <summary>
+            /// Pause
+            /// </summary>
+            public static readonly string PAUSE = "Pause";
+            /// <summary>
+            /// Caps Lock
+            /// </summary>
+            public static readonly string CAPITAL = "Capital";
+            /// <summary>
+            /// Esc
+            /// </summary>
+            public static readonly string ESCAPE = "Escape";
+            /// <summary>
+            /// Space
+            /// </summary>
+            public static readonly string SPACE = "Space";
+            /// <summary>
+            /// Page Up
+            /// </summary>
+            public static readonly string PRIOR = "PageUp";
+            /// <summary>
+            /// Page Down
+            /// </summary>
+            public static readonly string NEXT = "Next";
+            /// <summary>
+            /// End
+            /// </summary>
+            public static readonly string END = "End";
+            /// <summary>
+            /// Home
+            /// </summary>
+            public static readonly string HOME = "Home";
+            /// <summary>
+            /// Left Arrow
+            /// </summary>
+            public static readonly string LEFT = "Left";
+            /// <summary>
+            /// Up Arrow
+            /// </summary>
+            public static readonly string UP = "Up";
+            /// <summary>
+            /// Right Arrow
+            /// </summary>
+            public static readonly string RIGHT = "Right";
+            /// <summary>
+            /// Down Arrow
+            /// </summary>
+            public static readonly string DOWN = "Down";
+            /// <summary>
+            /// Select
+            /// </summary>
+            public static readonly string SELECT = "Select";
+            /// <summary>
+            /// Print
+            /// </summary>
+            public static readonly string PRINT = "Print";
+            /// <summary>
+            /// Execute
+            /// </summary>
+            public static readonly string EXECUTE = "Execute";
+            /// <summary>
+            /// Snapshot
+            /// </summary>
+            public static readonly string SNAPSHOT = "Snapshot";
+            /// <summary>
+            /// Insert
+            /// </summary>
+            public static readonly string INSERT = "Insert";
+            /// <summary>
+            /// Delete
+            /// </summary>
+            public static readonly string DELETE = "Delete";
+            /// <summary>
+            /// Help
+            /// </summary>
+            public static readonly string HELP = "Help";
             public static readonly string NUM0 = "D0";
             public static readonly string NUM1 = "D1";
             public static readonly string NUM2 = "D2";
@@ -210,57 +285,198 @@ namespace SuperIo
             public static readonly string X = "X";
             public static readonly string Y = "Y";
             public static readonly string Z = "Z";
-            public static readonly string LWIN = "LWin";                // 左WIN键
-            public static readonly string RWIN = "RWin";                // 右WIN键
-            public static readonly string APPS = "Apps";                // 应用程序键
-            public static readonly string SLEEP = "Sleep";              // 睡眠键
-            public static readonly string NUMPAD0 = "NumPad0";          // 小键盘 0
-            public static readonly string NUMPAD1 = "NumPad1";          // 小键盘 1
-            public static readonly string NUMPAD2 = "NumPad2";          // 小键盘 2
-            public static readonly string NUMPAD3 = "NumPad3";          // 小键盘 3
-            public static readonly string NUMPAD4 = "NumPad4";          // 小键盘 4
-            public static readonly string NUMPAD5 = "NumPad5";          // 小键盘 5
-            public static readonly string NUMPAD6 = "NumPad6";          // 小键盘 6
-            public static readonly string NUMPAD7 = "NumPad7";          // 小键盘 7
-            public static readonly string NUMPAD8 = "NumPad8";          // 小键盘 8
-            public static readonly string NUMPAD9 = "NumPad9";          // 小键盘 9
-            public static readonly string MULTIPLY = "Multiply";        // 小键盘 *
-            public static readonly string ADD = "Add";                  // 小键盘 +
-            public static readonly string SEPARATOR = "Return";         // 小键盘 Enter
-            public static readonly string SUBTRACT = "Subtract";        // 小键盘 -
-            public static readonly string DECIMAL = "Decimal";          // 小键盘 .
-            public static readonly string DIVIDE = "Divide";            // 小键盘 /
-            public static readonly string F1 = "F1";                    // F1
-            public static readonly string F2 = "F2";                    // F2
-            public static readonly string F3 = "F3";                    // F3
-            public static readonly string F4 = "F4";                    // F4
-            public static readonly string F5 = "F5";                    // F5
-            public static readonly string F6 = "F6";                    // F6
-            public static readonly string F7 = "F7";                    // F7
-            public static readonly string F8 = "F8";                    // F8
-            public static readonly string F9 = "F9";                    // F9
-            public static readonly string F10 = "F10";                  // F10
-            public static readonly string F11 = "F11";                  // F11
-            public static readonly string F12 = "F12";                  // F12
-            public static readonly string NUMLOCK = "NumLock";          // Num Lock
-            public static readonly string SCROLL = "Scroll";            // Scroll
-            public static readonly string LSHIFT = "LeftShift";         // 左shift
-            public static readonly string RSHIFT = "RightShift";        // 右shift
+            /// <summary>
+            /// 左WIN键
+            /// </summary>
+            public static readonly string LWIN = "LWin";
+            /// <summary>
+            /// 右WIN键
+            /// </summary>
+            public static readonly string RWIN = "RWin";
+            /// <summary>
+            /// 应用程序键
+            /// </summary>
+            public static readonly string APPS = "Apps";
+            /// <summary>
+            /// 睡眠键
+            /// </summary>
+            public static readonly string SLEEP = "Sleep";
+            /// <summary>
+            /// 小键盘 0
+            /// </summary>
+            public static readonly string NUMPAD0 = "NumPad0";
+            /// <summary>
+            /// 小键盘 1
+            /// </summary>
+            public static readonly string NUMPAD1 = "NumPad1";
+            /// <summary>
+            /// 小键盘 2
+            /// </summary>
+            public static readonly string NUMPAD2 = "NumPad2";
+            /// <summary>
+            /// 小键盘 3
+            /// </summary>
+            public static readonly string NUMPAD3 = "NumPad3";
+            /// <summary>
+            /// 小键盘 4
+            /// </summary>
+            public static readonly string NUMPAD4 = "NumPad4";
+            /// <summary>
+            /// 小键盘 5
+            /// </summary>
+            public static readonly string NUMPAD5 = "NumPad5";
+            /// <summary>
+            /// 小键盘 6
+            /// </summary>
+            public static readonly string NUMPAD6 = "NumPad6";
+            /// <summary>
+            /// 小键盘 7
+            /// </summary>
+            public static readonly string NUMPAD7 = "NumPad7";
+            /// <summary>
+            /// 小键盘 8
+            /// </summary>
+            public static readonly string NUMPAD8 = "NumPad8";
+            /// <summary>
+            /// 小键盘 9
+            /// </summary>
+            public static readonly string NUMPAD9 = "NumPad9";
+            /// <summary>
+            /// 小键盘 *
+            /// </summary>
+            public static readonly string MULTIPLY = "Multiply";
+            /// <summary>
+            /// 小键盘 +
+            /// </summary>
+            public static readonly string ADD = "Add";
+            /// <summary>
+            /// 小键盘 Enter
+            /// </summary>
+            public static readonly string SEPARATOR = "Return";
+            /// <summary>
+            /// 小键盘 -
+            /// </summary>
+            public static readonly string SUBTRACT = "Subtract";
+            /// <summary>
+            /// 小键盘 .
+            /// </summary>
+            public static readonly string DECIMAL = "Decimal";
+            /// <summary>
+            /// 小键盘 /
+            /// </summary>
+            public static readonly string DIVIDE = "Divide";
+            /// <summary>
+            /// F1
+            /// </summary>
+            public static readonly string F1 = "F1";
+            /// <summary>
+            /// F2
+            /// </summary>
+            public static readonly string F2 = "F2";
+            /// <summary>
+            /// F3
+            /// </summary>
+            public static readonly string F3 = "F3";
+            /// <summary>
+            /// F4
+            /// </summary>
+            public static readonly string F4 = "F4";
+            /// <summary>
+            /// F5
+            /// </summary>
+            public static readonly string F5 = "F5";
+            /// <summary>
+            /// F6
+            /// </summary>
+            public static readonly string F6 = "F6";
+            /// <summary>
+            /// F7
+            /// </summary>
+            public static readonly string F7 = "F7";
+            /// <summary>
+            /// F8
+            /// </summary>
+            public static readonly string F8 = "F8";
+            /// <summary>
+            /// F9
+            /// </summary>
+            public static readonly string F9 = "F9";
+            /// <summary>
+            /// F10
+            /// </summary>
+            public static readonly string F10 = "F10";
+            /// <summary>
+            /// F11
+            /// </summary>
+            public static readonly string F11 = "F11";
+            /// <summary>
+            /// F12
+            /// </summary>
+            public static readonly string F12 = "F12";
+            /// <summary>
+            /// Num Lock
+            /// </summary>
+            public static readonly string NUMLOCK = "NumLock";
+            /// <summary>
+            /// Scroll
+            /// </summary>
+            public static readonly string SCROLL = "Scroll";
+            /// <summary>
+            /// 左shift
+            /// </summary>
+            public static readonly string LSHIFT = "LeftShift";
+            /// <summary>
+            /// 右shift
+            /// </summary>
+            public static readonly string RSHIFT = "RightShift";
             public static readonly string LCONTROL = "LeftCtrl";
             public static readonly string RCONTROL = "RightCtrl";
             public static readonly string LMENU = "LeftAlt";
             public static readonly string RMENU = "RightAlt";
-            public static readonly string OEM_1 = "Oem1";               // ; :
-            public static readonly string OEM_PLUS = "OemPlus";         // = +
-            public static readonly string OEM_COMMA = "OemComma";       // ,
-            public static readonly string OEM_MINUS = "OemMinus";       // - _
-            public static readonly string OEM_PERIOD = "OemPeriod";     // .
-            public static readonly string OEM_2 = "OemQuestion";        // / ?
-            public static readonly string OEM_3 = "Oem3";               // ` ~
-            public static readonly string OEM_4 = "OemOpenBrackets";    // [ {
-            public static readonly string OEM_5 = "Oem5";               // \ |
-            public static readonly string OEM_6 = "Oem6";               // ] }
-            public static readonly string OEM_7 = "OemQuotes";		    // ' "
+            /// <summary>
+            /// ; :
+            /// </summary>
+            public static readonly string OEM_1 = "Oem1";
+            /// <summary>
+            /// = +
+            /// </summary>
+            public static readonly string OEM_PLUS = "OemPlus";
+            /// <summary>
+            /// ,
+            /// </summary>
+            public static readonly string OEM_COMMA = "OemComma";
+            /// <summary>
+            /// - _
+            /// </summary>
+            public static readonly string OEM_MINUS = "OemMinus";
+            /// <summary>
+            /// .
+            /// </summary>
+            public static readonly string OEM_PERIOD = "OemPeriod";
+            /// <summary>
+            /// / ?
+            /// </summary>
+            public static readonly string OEM_2 = "OemQuestion";
+            /// <summary>
+            /// ` ~
+            /// </summary>
+            public static readonly string OEM_3 = "Oem3";
+            /// <summary>
+            /// [ {
+            /// </summary>
+            public static readonly string OEM_4 = "OemOpenBrackets";
+            /// <summary>
+            /// \ |
+            /// </summary>
+            public static readonly string OEM_5 = "Oem5";
+            /// <summary>
+            /// ] }
+            /// </summary>
+            public static readonly string OEM_6 = "Oem6";
+            /// <summary>
+            /// ' "
+            /// </summary>
+            public static readonly string OEM_7 = "OemQuotes";
             public static readonly string OEM_8 = "";
             public static readonly string OEM_102 = "OemBackslash";
             public static readonly string OEM_CLEAR = "";
