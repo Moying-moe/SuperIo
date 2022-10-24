@@ -151,16 +151,17 @@ namespace SuperIoTestProgram
         {
             DebugLog();
             hotkey.Register(
-                "Q",
+                SuperKeyHook.Key.Q,
                 delegate () {
-                    DebugLog("down: Q");
+                    DebugLog("down: Ctrl+Q");
                 },
                 delegate ()
                 {
-                    DebugLog("up: Q");
-                }
+                    DebugLog("up: Ctrl+Q");
+                },
+                ctrl: true
             );
-            DebugLog("Hooked on \"Q\".");
+            DebugLog("Hooked on \"Ctrl+Q\".");
         }
     }
 }

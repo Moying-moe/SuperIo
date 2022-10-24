@@ -70,6 +70,10 @@ namespace SuperIo
             UnhookWindowsHookEx(_setWindowsHookExReturnKeyBoard);
         }
 
+        ushort _ctrlHolding = 0;
+        ushort _altHolding = 0;
+        ushort _shiftHolding = 0;
+
         public int HookProcMathodKeyBoard(int code, int wParam, IntPtr lParam)
         {
             // 处理键盘事件
@@ -80,23 +84,75 @@ namespace SuperIo
             if (code >= 0)//如果code的值大于0说明获取到了按键输入
             {
                 string keyString = key.ToString();
+
+                #region 功能键按压情况
+                if (keyString == Key.CONTROL || keyString == Key.LCONTROL || keyString == Key.RCONTROL)
+                {
+                    if (wParam == WM_KEYDOWN)
+                    {
+                        _ctrlHolding++;
+                    }
+                    if (wParam == WM_KEYUP)
+                    {
+                        if (_ctrlHolding > 0)
+                        {
+                            _ctrlHolding--;
+                        }
+                    }
+                }
+                if (keyString == Key.MENU || keyString == Key.LMENU || keyString == Key.RMENU)
+                {
+                    if (wParam == WM_KEYDOWN)
+                    {
+                        _altHolding++;
+                    }
+                    if (wParam == WM_KEYUP)
+                    {
+                        if (_altHolding > 0)
+                        {
+                            _altHolding--;
+                        }
+                    }
+                }
+                if (keyString == Key.SHIFT || keyString == Key.LSHIFT || keyString == Key.RSHIFT)
+                {
+                    if (wParam == WM_KEYDOWN)
+                    {
+                        _shiftHolding++;
+                    }
+                    if (wParam == WM_KEYUP)
+                    {
+                        if (_shiftHolding > 0)
+                        {
+                            _shiftHolding--;
+                        }
+                    }
+                }
+                #endregion
+
                 KeyHookHandlerStruct handler;
                 if (_registeredHooks.TryGetValue(keyString, out handler))
                 {
-                    if (wParam == WM_KEYDOWN)//检测到键盘按下
+                    if (!((handler.Ctrl && _ctrlHolding == 0) ||
+                          (handler.Alt && _altHolding == 0) ||
+                          (handler.Shift && _shiftHolding == 0)))
                     {
-                        if (!handler.IsDown)
+                        // 如果应当按下的功能键没有按下 那么此handler实际上没有被激活 反之 就是激活了
+                        if (wParam == WM_KEYDOWN)//检测到键盘按下
                         {
-                            handler.IsDown = true;
-                            handler.OnKeyDown();
+                            if (!handler.IsDown)
+                            {
+                                handler.IsDown = true;
+                                handler.OnKeyDown();
+                            }
                         }
-                    }
-                    if (wParam == WM_KEYUP)//检测到键盘抬起
-                    {
-                        if (handler.IsDown)
+                        if (wParam == WM_KEYUP)//检测到键盘抬起
                         {
-                            handler.IsDown = false;
-                            handler.OnKeyUp();
+                            if (handler.IsDown)
+                            {
+                                handler.IsDown = false;
+                                handler.OnKeyUp();
+                            }
                         }
                     }
                 }
@@ -110,6 +166,9 @@ namespace SuperIo
         [StructLayout(LayoutKind.Sequential)]
         public class KeyHookHandlerStruct {
             public bool IsDown = false;
+            public bool Ctrl = false;
+            public bool Alt = false;
+            public bool Shift = false;
             public KeyHookHandler OnKeyDown;
             public KeyHookHandler OnKeyUp;
         }
@@ -142,6 +201,29 @@ namespace SuperIo
         {
             return Register(keyString, new KeyHookHandlerStruct()
             {
+                OnKeyDown = keyDownHandler,
+                OnKeyUp = keyUpHandler
+            });
+        }
+        /// <summary>
+        /// Register a key hook.
+        /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
+        /// </summary>
+        /// <param name="keyString">Key that will trigger the handler</param>
+        /// <param name="keyDownHandler">Key down handler</param>
+        /// <param name="keyUpHandler">Key up handler</param>
+        /// <param name="ctrl"></param>
+        /// <param name="alt"></param>
+        /// <param name="shift"></param>
+        /// <returns></returns>
+        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler,
+            bool ctrl = false, bool alt = false, bool shift = false)
+        {
+            return Register(keyString, new KeyHookHandlerStruct()
+            {
+                Ctrl = ctrl,
+                Alt = alt,
+                Shift = shift,
                 OnKeyDown = keyDownHandler,
                 OnKeyUp = keyUpHandler
             });
