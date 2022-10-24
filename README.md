@@ -63,6 +63,8 @@ else
     Console.WriteLine("Initialization fail.");
 }
 // ......
+
+Console.WriteLine(SuperKeyboard.IsInitialized); // => true
 ```
 
 It is recommended to initialize at the beginning of the program. Because `SuperKeyboard` need about 0.2 - 1.0s to load *WinRing0* Library.
@@ -139,6 +141,9 @@ else
     Console.WriteLine("Initialization fail.");
 }
 // ......
+
+
+Console.WriteLine(SuperMouse.IsInitialized); // => true
 ```
 
 You can call `MoveRelative(int dx, int dy)` to move your mouse relatively. The distance unit is pixel.
@@ -210,7 +215,24 @@ SuperMouse.ScrollDown();    // Same as code above
 
 `SuperScreen` use *user32* and *gdi32* to implement its functions. So it works on most apps and games.
 
-Unlike modules above, `SuperScreen` does not need to initialized before use.
+Like other modules, you need to initialize `SuperScreen` module before actual use.
+
+```C#
+using SuperIo;
+
+// ......
+if (SuperScreen.Initialize())
+{
+    Console.WriteLine("Initialization success.");
+}
+else
+{
+    Console.WriteLine("Initialization fail.");
+}
+// ......
+
+Console.WriteLine(SuperScreen.IsInitialized); // => true
+```
 
 Call `GetPixelColor(int x, int y)` to get the color of the pixel at (x, y).
 
@@ -250,21 +272,63 @@ SuperScreen.IsColorAt(960, 540, prettyRed);         // => false
 SuperScreen.IsColorAt(960, 540, prettyRed, 0.95d);  // => true
 ```
 
+Call `SearchColor` to search a specified color on the screen.
+
+```C#
+Color black = Color.FromArgb(0,0,0);
+Rectangle area = new Rectangle(100, 100, 800, 600);
+
+// example 1
+SuperScreen.SearchColor(black, SuperScreen.SearchDirection.FromLeftTop, area);
+// example 2
+SuperScreen.SearchColor(black, SuperScreen.SearchDirection.FromRightBottom, area, 0.95d);
+// example 3
+SuperScreen.SearchColor(black, SuperScreen.SearchDirection.LeftToRight);
+// example 4
+SuperScreen.SearchColor(black, SuperScreen.SearchDirection.TopToBottom, 0.95d);
+```
+
+In example 1, it will search and return first pixel which is black in area (100, 100, 800, 600). It will search from the left-top corner. Searched zone will look like a triangle:
+
+```plain
+XXXXOOO
+XXXOOOO
+XXOOOOO
+XOOOOOO
+OOOOOOO
+
+X: pixel has been searched
+O: pixel has NOT been searched
+```
+
+There are plenty of directions: `FromLeftTop`,`FromRightTop`,`FromLeftBottom`,`FromRightBottom`,`LeftToRight`,`RightToLeft`,`TopToBottom`,`BottomToTop` and `FromCenter`(not implemented yet).
+
+In example 2, it will search and return first pixel which is similar to black in the given area. The similarity algorithm is the same as `ColorDifference` uses.
+
+In example 3 and 4, we didn't specify the searching area. So it will be default to the full screen.
+
 ### SuperKeyHook
 
 `SuperKeyHook` use Windows Hook to implement its functions. So it works on most apps and games.
 
-Unlike modules above, you need to **instantiate** `SuperKeyHook` to use it.
+Like other modules, you need to initialize `SuperKeyHook` module before actual use.
 
 ```C#
 using SuperIo;
 
 // ......
-SuperKeyHook hotkeyManager = new SuperKeyHook();
+if (SuperKeyHook.Initialize())
+{
+    Console.WriteLine("Initialization success.");
+}
+else
+{
+    Console.WriteLine("Initialization fail.");
+}
 // ......
-```
 
-Notice that you need to keep this object alive. If you instantiate this object as a local variable, it may be removed by garbage collection (GC). Try to declare it as a class attribute, or use `GC.KeepAlive(hotkeyManager);`
+Console.WriteLine(SuperKeyHook.IsInitialized); // => true
+```
 
 Then, register hotkeys you want to bind.
 
@@ -284,11 +348,11 @@ SuperKeyHook.KeyHookHandlerStruct handler =
                 Alt = false,
                 Shift = false
             };
-hotkeyManager.Register(SuperKeyHook.Key.Q, handler);
+SuperKeyHook.Register(SuperKeyHook.Key.Q, handler);
 
 // or
 
-hotkey.Register(
+SuperKeyHook.Register(
     ctrl: true,
     keyString: SuperKeyHook.Key.Q,
     keyDownHandler: delegate ()
@@ -296,9 +360,9 @@ hotkey.Register(
                         Console.WriteLine("Ctrl+Q down");
                     },
     keyUpHandler: delegate ()
-                    {
-                        Console.WriteLine("Ctrl+Q up");
-                    }
+                  {
+                      Console.WriteLine("Ctrl+Q up");
+                  }
 );
 ```
 
@@ -309,7 +373,7 @@ hotkey.Register(
 Because `SuperKeyboard` can generate native input of the PS/2 keyboard. So `SuperKeyboard.KeyPress` **WILL TRIGGER** `SuperKeyHook`'s hook! This may case **UNEXPECT recursive call**!
 
 ```C#
-hotkeyManager.Register(
+SuperKeyHook.Register(
     keyString: SuperKeyHook.Key.Q,
     keyDownHandler: delegate ()
     {
@@ -332,7 +396,7 @@ Also, you can create a *Hotkey Lock*. When hotkey event is running, prevent hand
 ```C#
 private bool hotkeyLock_Q = false;
 
-hotkeyManager.Register(
+SuperKeyHook.Register(
     keyString: SuperKeyHook.Key.Q,
     keyDownHandler: delegate ()
     {
@@ -367,7 +431,7 @@ If you want to deal with all inputs that user triggered, you can use `AddGlobalK
 private int handlerId;
 
 // ......
-handlerId = hotkey.AddGlobalKeyHandler(
+handlerId = SuperKeyHook.AddGlobalKeyHandler(
     delegate (string keyString, bool isKeyDown, bool isKeyUp)
     {
         Console.WriteLine("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
@@ -377,7 +441,7 @@ handlerId = hotkey.AddGlobalKeyHandler(
 // ......
 
 // in app close event
-RemoveGlobalKeyHandler(handlerId);
+SuperKeyHook.RemoveGlobalKeyHandler(handlerId);
 ```
 
 There is a `return true;` at the end of the delegate. It means `SuperKeyHook` can continue to handle this input event. So this input event may trigger a hotkey.
@@ -385,7 +449,7 @@ There is a `return true;` at the end of the delegate. It means `SuperKeyHook` ca
 If you returns `false` in the delegate, it will prevent `SuperKeyHook` from handling this input event. Here is the example.
 
 ```C#
-hotkeyManager.Register(
+SuperKeyHook.Register(
     keyString: SuperKeyHook.Key.Q,
     keyDownHandler: delegate ()
     {
@@ -394,7 +458,7 @@ hotkeyManager.Register(
     keyUpHandler: delegate () { }
 );
 
-hotkey.AddGlobalKeyHandler(
+SuperKeyHook.AddGlobalKeyHandler(
     delegate (string keyString, bool isKeyDown, bool isKeyUp)
     {
         if (keyString == SuperKeyHook.Key.Q)
