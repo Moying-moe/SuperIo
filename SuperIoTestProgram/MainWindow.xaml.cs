@@ -22,9 +22,6 @@ namespace SuperIoTestProgram
     /// </summary>
     public partial class MainWindow : Window
     {
-        SuperKeyHook hotkey = new SuperKeyHook();
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -75,7 +72,7 @@ namespace SuperIoTestProgram
                     Thread.Sleep(1000);
 
                     DebugLog("- input Shift+M");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.CmdKey.SHIFT);
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.ModKey.SHIFT);
                     // or
                     //SuperKeyboard.KeyCombSeq(25, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_M);
                     Thread.Sleep(1000);
@@ -89,7 +86,7 @@ namespace SuperIoTestProgram
                     Thread.Sleep(1000);
 
                     DebugLog("- press Ctrl+Alt+A");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.CmdKey.CTRL | SuperKeyboard.CmdKey.ALT);
+                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.ModKey.CTRL | SuperKeyboard.ModKey.ALT);
                     Thread.Sleep(1000);
 
                     DebugLog("SuperKeyboard Test done.");
@@ -150,7 +147,9 @@ namespace SuperIoTestProgram
         private void BtnKeyHook_Click(object sender, RoutedEventArgs e)
         {
             DebugLog();
-            hotkey.Register(
+            SuperKeyHook.Initialize();
+
+            SuperKeyHook.Register(
                 ctrl: true,
                 keyString: SuperKeyHook.Key.Q,
                 keyDownHandler: delegate ()
@@ -163,7 +162,7 @@ namespace SuperIoTestProgram
                               }
             );
 
-            hotkey.AddGlobalKeyHandler(
+            SuperKeyHook.AddGlobalKeyHandler(
                 delegate (string keyString, bool isKeyDown, bool isKeyUp)
                 {
                     DebugLog("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
@@ -172,6 +171,11 @@ namespace SuperIoTestProgram
             );
 
             DebugLog("Hooked on \"Ctrl+Q\".");
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SuperKeyHook.Close();
         }
     }
 }

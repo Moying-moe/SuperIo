@@ -46,11 +46,11 @@
         <member name="M:SuperIo.SuperKeyboard.KeyPress(System.Byte,System.Int32)">
             <summary>
             Press the key one time.
-            <para>With keys in argument `with` holding.</para>
+            <para>With keys in argument `modFlags` holding.</para>
             <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
             </summary>
             <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-            <param name="with">CmdKey flag(s).</param>
+            <param name="modFlags">ModKey flag(s).</param>
         </member>
         <member name="M:SuperIo.SuperKeyboard.KeyCombSeq(System.Byte[])">
             <summary>
@@ -75,9 +75,9 @@
             <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
             <param name="interval">Interval between two keys.</param>
         </member>
-        <member name="T:SuperIo.SuperKeyboard.CmdKey">
+        <member name="T:SuperIo.SuperKeyboard.ModKey">
             <summary>
-            Command Keys
+            Modifier Keys
             </summary>
         </member>
         <member name="T:SuperIo.SuperKeyboard.Key">
@@ -496,10 +496,24 @@
             ' "
             </summary>
         </member>
-        <member name="M:SuperIo.SuperKeyHook.#ctor">
+        <member name="M:SuperIo.SuperKeyHook.Initialize">
             <summary>
-            Create Key Hook object.
+            Initialization
             </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.Close">
+            <summary>
+            Call in application quit event.
+            </summary>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.HookProcMathodKeyBoard(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            Handle key event
+            </summary>
+            <param name="code"></param>
+            <param name="wParam"></param>
+            <param name="lParam"></param>
+            <returns></returns>
         </member>
         <member name="M:SuperIo.SuperKeyHook.Register(System.String,SuperIo.SuperKeyHook.KeyHookHandlerStruct)">
             <summary>
@@ -553,6 +567,11 @@
             </summary>
             <param name="handlerId"></param>
             <returns>Return false if handler which handlerId specified is not exists.</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.RemoveAllGlobalKeyHandlers">
+            <summary>
+            Remove all global key handlers.
+            </summary>
         </member>
         <member name="F:SuperIo.SuperKeyHook.Key.BACK">
             <summary>

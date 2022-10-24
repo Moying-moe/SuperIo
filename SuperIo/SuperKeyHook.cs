@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace SuperIo
 {
-    public class SuperKeyHook
+    public static class SuperKeyHook
     {
         #region DllImport
         //定义SetWindowsHookEx
@@ -48,35 +48,83 @@ namespace SuperIo
         }
         #endregion
 
-        int _setWindowsHookExReturnKeyBoard;
-        HOOKPROC _keyBoard;
+        public delegate void KeyHookHandler();
+        public delegate bool GlobalKeyHandler(string keyString, bool isKeyDown, bool isKeyUp);
 
-        Dictionary<string, KeyHookHandlerStruct> _registeredHooks = new Dictionary<string, KeyHookHandlerStruct>();
+        [StructLayout(LayoutKind.Sequential)]
+        public class KeyHookHandlerStruct
+        {
+            public bool IsDown = false;
+            public bool Ctrl = false;
+            public bool Alt = false;
+            public bool Shift = false;
+            public KeyHookHandler OnKeyDown;
+            public KeyHookHandler OnKeyUp;
+        }
+
+
+        private static bool _initialized = false;        // 模块是否已经初始化
+
+        private static int _setWindowsHookExReturnKeyBoard;
+        private static HOOKPROC _keyBoard;
+        private static int _invokeId = 0;
+
+        private static ushort _ctrlHolding = 0;
+        private static ushort _altHolding = 0;
+        private static ushort _shiftHolding = 0;
+
+        private static Dictionary<string, KeyHookHandlerStruct> _registeredHooks = new Dictionary<string, KeyHookHandlerStruct>();
+        private static Dictionary<int, GlobalKeyHandler> _invokeMethods = new Dictionary<int, GlobalKeyHandler>();
 
         /// <summary>
-        /// Create Key Hook object.
+        /// Initialization
         /// </summary>
-        public SuperKeyHook()
+        public static bool Initialize()
         {
+            if (_initialized)
+            {
+                return true;
+            }
             _keyBoard = new HOOKPROC(HookProcMathodKeyBoard);//创建委托变量
             Process curProcess = Process.GetCurrentProcess();//获取窗体句柄
             ProcessModule curModule = curProcess.MainModule;
             _setWindowsHookExReturnKeyBoard = SetWindowsHookEx(13, _keyBoard, GetModuleHandle(curModule.ModuleName), 0);
+
+            _initialized = true;
+            return _initialized;
         }
 
-        ~SuperKeyHook()
+        private static void CheckInitialization()
+        {
+            if (!_initialized)
+            {
+                throw new Exception("SuperKeyHook has not initialized yet. Try to call `SuperKeyHook.Initialize()` first.");
+            }
+        }
+
+        /// <summary>
+        /// Call in application quit event.
+        /// </summary>
+        public static void Close()
         {
             // 解除键盘钩子
+            CheckInitialization();
+
             UnhookWindowsHookEx(_setWindowsHookExReturnKeyBoard);
         }
 
-        ushort _ctrlHolding = 0;
-        ushort _altHolding = 0;
-        ushort _shiftHolding = 0;
-
-        public int HookProcMathodKeyBoard(int code, int wParam, IntPtr lParam)
+        
+        /// <summary>
+        /// Handle key event
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static int HookProcMathodKeyBoard(int code, int wParam, IntPtr lParam)
         {
             // 处理键盘事件
+            CheckInitialization();
 
             tagKBDLLHOOKSTRUCT v = (tagKBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(tagKBDLLHOOKSTRUCT));//将捕获的键盘信息存储到存储键盘信息的结构体中
             
@@ -174,17 +222,7 @@ namespace SuperIo
                                                                                         //递给下一个钩子
         }
 
-        public delegate void KeyHookHandler();
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class KeyHookHandlerStruct {
-            public bool IsDown = false;
-            public bool Ctrl = false;
-            public bool Alt = false;
-            public bool Shift = false;
-            public KeyHookHandler OnKeyDown;
-            public KeyHookHandler OnKeyUp;
-        }
+        
 
         /// <summary>
         /// <para>Register a key hook.</para>
@@ -193,8 +231,10 @@ namespace SuperIo
         /// <param name="keyString">Key that will trigger the handler</param>
         /// <param name="handler">Handler</param>
         /// <returns>Return false if given key is already exists.</returns>
-        public bool Register(string keyString, KeyHookHandlerStruct handler)
+        public static bool Register(string keyString, KeyHookHandlerStruct handler)
         {
+            CheckInitialization();
+
             if (_registeredHooks.ContainsKey(keyString))
             {
                 return false;
@@ -210,8 +250,10 @@ namespace SuperIo
         /// <param name="keyDownHandler">Key down handler</param>
         /// <param name="keyUpHandler">Key up handler</param>
         /// <returns></returns>
-        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler)
+        public static bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler)
         {
+            CheckInitialization();
+
             return Register(keyString, new KeyHookHandlerStruct()
             {
                 OnKeyDown = keyDownHandler,
@@ -229,9 +271,11 @@ namespace SuperIo
         /// <param name="alt"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
-        public bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler,
+        public static bool Register(string keyString, KeyHookHandler keyDownHandler, KeyHookHandler keyUpHandler,
             bool ctrl = false, bool alt = false, bool shift = false)
         {
+            CheckInitialization();
+
             return Register(keyString, new KeyHookHandlerStruct()
             {
                 Ctrl = ctrl,
@@ -246,23 +290,24 @@ namespace SuperIo
         /// </summary>
         /// <param name="keyString"></param>
         /// <returns></returns>
-        public bool Unregister(string keyString)
+        public static bool Unregister(string keyString)
         {
+            CheckInitialization();
+
             return _registeredHooks.Remove(keyString);
         }
 
-        public delegate bool GlobalKeyHandler(string keyString, bool isKeyDown, bool isKeyUp);
 
-        private Dictionary<int,GlobalKeyHandler> _invokeMethods = new Dictionary<int,GlobalKeyHandler>();
-        private int _invokeId = 0;
 
         /// <summary>
         /// Add a global key handler. Which will triggered everytime user press a key.
         /// </summary>
         /// <param name="newHandler"></param>
         /// <returns>handler id</returns>
-        public int AddGlobalKeyHandler(GlobalKeyHandler newHandler)
+        public static int AddGlobalKeyHandler(GlobalKeyHandler newHandler)
         {
+            CheckInitialization();
+
             int newInvokeId = _invokeId;
             _invokeId++;
             _invokeMethods.Add(newInvokeId, newHandler);
@@ -273,15 +318,19 @@ namespace SuperIo
         /// </summary>
         /// <param name="handlerId"></param>
         /// <returns>Return false if handler which handlerId specified is not exists.</returns>
-        public bool RemoveGlobalKeyHandler(int handlerId)
+        public static bool RemoveGlobalKeyHandler(int handlerId)
         {
+            CheckInitialization();
+
             return _invokeMethods.Remove(handlerId);
         }
         /// <summary>
         /// Remove all global key handlers.
         /// </summary>
-        public void RemoveAllGlobalKeyHandlers()
+        public static void RemoveAllGlobalKeyHandlers()
         {
+            CheckInitialization();
+
             _invokeMethods.Clear();
         }
 
