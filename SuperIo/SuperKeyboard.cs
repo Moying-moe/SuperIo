@@ -91,24 +91,24 @@ namespace SuperIo
 
         /// <summary>
         /// Press the key one time.
-        /// <para>With keys in argument `with` holding.</para>
+        /// <para>With keys in argument `modFlags` holding.</para>
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-        /// <param name="with">CmdKey flag(s).</param>
-        public static void KeyPress(byte keycode, int with)
+        /// <param name="modFlags">ModKey flag(s).</param>
+        public static void KeyPress(byte keycode, int modFlags)
         {
             CheckInitialization();
 
-            bool ctrl = (with & CmdKey.CTRL) > 0;
-            bool alt = (with & CmdKey.ALT) > 0;
-            bool shift = (with & CmdKey.SHIFT) > 0;
-            bool rctrl = (with & CmdKey.R_CTRL) > 0;
-            bool ralt = (with & CmdKey.R_ALT) > 0;
-            bool rshift = (with & CmdKey.R_SHIFT) > 0;
-            bool hasWith = ctrl || alt || shift || rctrl || ralt || rshift;
+            bool ctrl = (modFlags & ModKey.CTRL) > 0;
+            bool alt = (modFlags & ModKey.ALT) > 0;
+            bool shift = (modFlags & ModKey.SHIFT) > 0;
+            bool rctrl = (modFlags & ModKey.R_CTRL) > 0;
+            bool ralt = (modFlags & ModKey.R_ALT) > 0;
+            bool rshift = (modFlags & ModKey.R_SHIFT) > 0;
+            bool hasMod = ctrl || alt || shift || rctrl || ralt || rshift;
 
-            if (hasWith)
+            if (hasMod)
             {
                 if (ctrl)
                 {
@@ -142,7 +142,7 @@ namespace SuperIo
             Thread.Sleep(_keyPressDelay);
             WinRing0.KeyUp(keycode);
 
-            if (hasWith)
+            if (hasMod)
             {
                 Thread.Sleep(_keyPressDelay);
 
@@ -216,9 +216,9 @@ namespace SuperIo
         }
 
         /// <summary>
-        /// Command Keys
+        /// Modifier Keys
         /// </summary>
-        public static class CmdKey
+        public static class ModKey
         {
             public static readonly int CTRL    = 0b000001;
             public static readonly int ALT     = 0b000010;

@@ -1,7 +1,7 @@
 # SuperIo
 
 [![License-GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange)](https://github.com/Moying-moe/SuperIo/blob/master/LICENSE)
-![version v0.1.0](https://img.shields.io/badge/version-v0.1.0--alpha-green)
+![version v0.3.0](https://img.shields.io/badge/version-v0.3.0--alpha-green)
 
 ---
 
@@ -22,11 +22,9 @@ With *SuperIo*, you can create an automatic tool that can control your mouse and
 
 ## Import to your project
 
-CAUTION: **SuperIo currently only runs on 64-bit systems. And will support 32-bit systems in the future.**
-
 You can download the compiled DLL file in [Github Releases Page](https://github.com/Moying-moe/SuperIo/releases). Or you can also clone the repository and build it by yourself.
 
-It contains 3 files. `SuperIo.dll`, `WinRing0x64.dll` and `WinRing0x64.sys`. You need to copy these 3 files to your project's root.
+It contains 5 files. `SuperIo.dll` and 4 *WinRing0* files(`WinRing0.dll`, `WinRing0.sys`, `WinRing0x64.dll`, `WinRing0x64.sys`). You need to copy these 5 files to your project's root.
 
 (WinRing0 files can be found in [This Repository](https://github.com/QCute/WinRing0) if you build these files by yourself.)
 
@@ -36,9 +34,9 @@ Then, reference `SuperIo.dll` in your project. Import it with these codes.
 using SuperIo;
 ```
 
-When your project is built, copy `WinRing0x64.dll` and `WinRing0x64.sys` to your application's root.
+When your project is built, copy *WinRing0* files to your application's root.
 
-Or you can also add these files into your project if you are using *Visual Studio* or other IDE. It will automatically copy these files.
+Or you can also add these files into your project if you are using *Visual Studio* or other IDE. After proper setups, it will automatically copy these files to your application's root.
 
 ---
 
@@ -67,7 +65,7 @@ else
 // ......
 ```
 
-It is recommended to initialize at the beginning of the program. Because `SuperKeyboard` need about 0.2 - 1.0s to initialize.
+It is recommended to initialize at the beginning of the program. Because `SuperKeyboard` need about 0.2 - 1.0s to load *WinRing0* Library.
 
 You can call `KeyPress(byte)` to simulate a keyboard press.
 
@@ -91,11 +89,35 @@ SuperKeyboard.KeyUp(SuperKeyboard.Key.VK_SHIFT);
 
 Here are 2 new methods! `KeyDown(byte)` and `KeyUp(byte)`. Which literally means to press down a key or release a key. In this case, we pressed down **Shift** and hold it, then pressed **A** , and then released **Shift**.
 
-KeyPress is implemented by calling KeyDown and KeyUp. *SuperIo* will automatically add a delay between these two action. The delay defaults to 50 milliseconds. You can set it by calling `SetKeyPressDelay(int)`.
+You can also call `KeyPress(byte keycode, int modFlags)` if you just want to press a key with Modifier key (Ctrl, Shift or/and Alt) holding.
+
+```C#
+// Ctrl + Shift + A
+SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.ModKey.CTRL | SuperKeyboard.ModKey.SHIFT);
+```
+
+There is another way to achieve this function. Try to call `KeyCombSeq(byte, byte, ...)`.
+
+```C#
+// Ctrl + Shift + A.
+SuperKeyboard.KeyCombSeq(SuperKeyboard.Key.VK_CTRL, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_A);
+```
+
+KeyPress is implemented by calling KeyDown and KeyUp. *SuperIo* will automatically add a delay between these two actions. The delay defaults to 50 milliseconds. You can set it by calling `SetKeyPressDelay(int)`.
 
 ```C#
 SuperKeyboard.SetKeyPressDelay(20);
 Console.WriteLine(SuperKeyboard.GetKeyPressDelay()); // => 20
+```
+
+Also, `KeyCombSeq` will add this Delay between each key. You can also specified this delay with argument `interval`.
+
+```C#
+// What will happen:
+// Press down Ctrl. Wait 25ms. Press down Shift. Wait 25ms.
+// Press A. Wait 25 ms.
+// Release Shift. Wait 25ms. Release Ctrl. Method return.
+SuperKeyboard.KeyCombSeq(25, SuperKeyboard.Key.VK_CTRL, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_A);
 ```
 
 ### SuperMouse
@@ -252,27 +274,31 @@ SuperKeyHook.KeyHookHandlerStruct handler =
             {
                 OnKeyDown = delegate ()
                 {
-                    Console.WriteLine("Q down");
+                    Console.WriteLine("Ctrl+Q down");
                 },
                 OnKeyUp = delegate ()
                 {
-                    Console.WriteLine("Q up");
-                }
+                    Console.WriteLine("Ctrl+Q up");
+                },
+                Ctrl = true,
+                Alt = false,
+                Shift = false
             };
 hotkeyManager.Register(SuperKeyHook.Key.Q, handler);
 
 // or
 
-hotkeyManager.Register(
-    SuperKeyHook.Key.Q,
-    delegate ()
-    {
-        Console.WriteLine("Q down");
-    },
-    delegate ()
-    {
-        Console.WriteLine("Q up");
-    }
+hotkey.Register(
+    ctrl: true,
+    keyString: SuperKeyHook.Key.Q,
+    keyDownHandler: delegate ()
+                    {
+                        Console.WriteLine("Ctrl+Q down");
+                    },
+    keyUpHandler: delegate ()
+                    {
+                        Console.WriteLine("Ctrl+Q up");
+                    }
 );
 ```
 
@@ -280,12 +306,12 @@ hotkeyManager.Register(
 
 **WARNING!!!**
 
-Because `SuperKeyboard` can generate native input of the PS2 keyboard. So `SuperKeyboard.KeyPress` **WILL TRIGGER** `SuperKeyHook`'s hook! This may case **UNEXPECT recursive call**!
+Because `SuperKeyboard` can generate native input of the PS/2 keyboard. So `SuperKeyboard.KeyPress` **WILL TRIGGER** `SuperKeyHook`'s hook! This may case **UNEXPECT recursive call**!
 
 ```C#
 hotkeyManager.Register(
-    SuperKeyHook.Key.Q,
-    delegate ()
+    keyString: SuperKeyHook.Key.Q,
+    keyDownHandler: delegate ()
     {
         Console.WriteLine("You press the hotkey");
         // want to input "quit" and return
@@ -295,41 +321,89 @@ hotkeyManager.Register(
         SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_T);
         SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_RETURN);
     },
-    delegate () { }
+    keyUpHandler: delegate () { }
 );
 ```
 
-It can be avoided by using combination key as hotkey. But combination key is not supported native in current version.
+It can be avoided by using combination key as hotkey. Try to use hotkeys like **Ctrl+Q** instead of a simple **Q**.
 
-You can use the following code as a substitute.
+Also, you can create a *Hotkey Lock*. When hotkey event is running, prevent handling this hotkey again. Try this code:
 
 ```C#
-bool IsShiftDown = false;
+private bool hotkeyLock_Q = false;
+
 hotkeyManager.Register(
-    SuperKeyHook.Key.SHIFT,
-    delegate ()
+    keyString: SuperKeyHook.Key.Q,
+    keyDownHandler: delegate ()
     {
-        IsShiftDown = true;
+        // hotkey lock
+        lock (hotkeyLock_Q)
+        {
+            if (hotkeyLock_Q)
+            {
+                return;
+            }
+            hotkeyLock_Q = true;
+        }
+
+        Console.WriteLine("You press the hotkey");
+        SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_Q);
+        SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_U);
+        SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_I);
+        SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_T);
+        SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_RETURN);
+
+        hotkeyLock_Q = false;
     },
-    delegate ()
+    keyUpHandler: delegate () { }
+);
+```
+
+It will be a native function in the future.
+
+If you want to deal with all inputs that user triggered, you can use `AddGlobalKeyHandler(GlobalKeyHandler)` and `RemoveGlobalKeyHandler(int)`.
+
+```C#
+private int handlerId;
+
+// ......
+handlerId = hotkey.AddGlobalKeyHandler(
+    delegate (string keyString, bool isKeyDown, bool isKeyUp)
     {
-        IsShiftDown = false;
+        Console.WriteLine("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
+        return true;
     }
 );
+// ......
+
+// in app close event
+RemoveGlobalKeyHandler(handlerId);
+```
+
+There is a `return true;` at the end of the delegate. It means `SuperKeyHook` can continue to handle this input event. So this input event may trigger a hotkey.
+
+If you returns `false` in the delegate, it will prevent `SuperKeyHook` from handling this input event. Here is the example.
+
+```C#
 hotkeyManager.Register(
-    SuperKeyHook.Key.Q,
-    delegate () { },
-    delegate ()
+    keyString: SuperKeyHook.Key.Q,
+    keyDownHandler: delegate ()
     {
-        if (IsShiftDown) {
-            Console.WriteLine("You press the hotkey");
-            SuperKeyboard.KeyUp(SuperKeyboard.Key.SHIFT);
-            SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_Q);
-            SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_U);
-            SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_I);
-            SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_T);
-            SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_RETURN);
+        Console.WriteLine("hotkey triggered");
+    },
+    keyUpHandler: delegate () { }
+);
+
+hotkey.AddGlobalKeyHandler(
+    delegate (string keyString, bool isKeyDown, bool isKeyUp)
+    {
+        if (keyString == SuperKeyHook.Key.Q)
+        {
+            return false;
         }
+        return true;
     }
 );
 ```
+
+In this example, when user press **Q**, nothing will happen.
