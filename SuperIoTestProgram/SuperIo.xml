@@ -540,6 +540,20 @@
             <param name="keyString"></param>
             <returns></returns>
         </member>
+        <member name="M:SuperIo.SuperKeyHook.AddGlobalKeyHandler(SuperIo.SuperKeyHook.GlobalKeyHandler)">
+            <summary>
+            Add a global key handler. Which will triggered everytime user press a key.
+            </summary>
+            <param name="newHandler"></param>
+            <returns>handler id</returns>
+        </member>
+        <member name="M:SuperIo.SuperKeyHook.RemoveGlobalKeyHandler(System.Int32)">
+            <summary>
+            Remove a global key handler with its id.
+            </summary>
+            <param name="handlerId"></param>
+            <returns>Return false if handler which handlerId specified is not exists.</returns>
+        </member>
         <member name="F:SuperIo.SuperKeyHook.Key.BACK">
             <summary>
             Backspace

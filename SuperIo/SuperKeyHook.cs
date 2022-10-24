@@ -85,6 +85,19 @@ namespace SuperIo
             {
                 string keyString = key.ToString();
 
+                lock (_invokeMethods)
+                {
+                    foreach (KeyValuePair<int, GlobalKeyHandler> pair in _invokeMethods)
+                    {
+                        bool handlerResult = pair.Value(keyString, wParam == WM_KEYDOWN, wParam == WM_KEYUP);
+                        if (! handlerResult)
+                        {
+                            // 如果GlobalKeyHandler返回了false 则阻止它激活接下来的逻辑
+                            return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
+                        }
+                    }
+                }
+
                 #region 功能键按压情况
                 if (keyString == Key.CONTROL || keyString == Key.LCONTROL || keyString == Key.RCONTROL)
                 {
@@ -236,6 +249,33 @@ namespace SuperIo
         public bool Unregister(string keyString)
         {
             return _registeredHooks.Remove(keyString);
+        }
+
+        public delegate bool GlobalKeyHandler(string keyString, bool isKeyDown, bool isKeyUp);
+
+        private Dictionary<int,GlobalKeyHandler> _invokeMethods = new Dictionary<int,GlobalKeyHandler>();
+        private int _invokeId = 0;
+
+        /// <summary>
+        /// Add a global key handler. Which will triggered everytime user press a key.
+        /// </summary>
+        /// <param name="newHandler"></param>
+        /// <returns>handler id</returns>
+        public int AddGlobalKeyHandler(GlobalKeyHandler newHandler)
+        {
+            int newInvokeId = _invokeId;
+            _invokeId++;
+            _invokeMethods.Add(newInvokeId, newHandler);
+            return newInvokeId;
+        }
+        /// <summary>
+        /// Remove a global key handler with its id.
+        /// </summary>
+        /// <param name="handlerId"></param>
+        /// <returns>Return false if handler which handlerId specified is not exists.</returns>
+        public bool RemoveGlobalKeyHandler(int handlerId)
+        {
+            return _invokeMethods.Remove(handlerId);
         }
 
         public static class Key

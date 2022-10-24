@@ -161,6 +161,15 @@ namespace SuperIoTestProgram
                 },
                 ctrl: true
             );
+
+            hotkey.AddGlobalKeyHandler(
+                delegate (string keyString, bool isKeyDown, bool isKeyUp)
+                {
+                    DebugLog("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
+                    return true;
+                }
+            );
+
             DebugLog("Hooked on \"Ctrl+Q\".");
         }
     }
