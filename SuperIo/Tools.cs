@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace SuperIo
 {
-    public static class Tools
+    internal static class Tools
     {
         #region DllImport
         const int HORZRES = 8;
