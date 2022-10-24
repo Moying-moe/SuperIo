@@ -4,6 +4,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -54,7 +55,6 @@ namespace SuperIo
         [StructLayout(LayoutKind.Sequential)]
         public class KeyHookHandlerStruct
         {
-            public bool IsDown = false;
             public bool Ctrl = false;
             public bool Alt = false;
             public bool Shift = false;
@@ -77,6 +77,7 @@ namespace SuperIo
 
         private static Dictionary<string, KeyHookHandlerStruct> _registeredHooks = new Dictionary<string, KeyHookHandlerStruct>();
         private static Dictionary<int, GlobalKeyHandler> _invokeMethods = new Dictionary<int, GlobalKeyHandler>();
+        private static HashSet<string> _keyStatus = new HashSet<string>();
 
         /// <summary>
         /// Initialization
@@ -134,28 +135,52 @@ namespace SuperIo
             if (code >= 0)//如果code的值大于0说明获取到了按键输入
             {
                 string keyString = key.ToString();
+                bool isKeyDown = false;
+                bool isKeyUp = false;
 
-                lock (_invokeMethods)
+                if (wParam == WM_KEYDOWN)
                 {
-                    foreach (KeyValuePair<int, GlobalKeyHandler> pair in _invokeMethods)
+                    if (!_keyStatus.Contains(keyString))
                     {
-                        bool handlerResult = pair.Value(keyString, wParam == WM_KEYDOWN, wParam == WM_KEYUP);
-                        if (! handlerResult)
-                        {
-                            // 如果GlobalKeyHandler返回了false 则阻止它激活接下来的逻辑
-                            return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
-                        }
+                        _keyStatus.Add(keyString);
+                        isKeyDown = true;
+                    }
+                }
+                if (wParam == WM_KEYUP)
+                {
+                    if (_keyStatus.Contains(keyString))
+                    {
+                        _keyStatus.Remove(keyString);
+                        isKeyUp = true;
+                    }
+                }
+
+                if (!isKeyDown && !isKeyUp)
+                {
+                    // 如果只是Holding事件 则直接结束
+                    return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
+                }
+
+
+                // invoke methods
+                foreach (KeyValuePair<int, GlobalKeyHandler> pair in _invokeMethods)
+                {
+                    bool handlerResult = pair.Value(keyString, isKeyDown, isKeyUp);
+                    if (! handlerResult)
+                    {
+                        // 如果GlobalKeyHandler返回了false 则阻止它激活接下来的逻辑
+                        return CallNextHookEx(_setWindowsHookExReturnKeyBoard, code, wParam, lParam);
                     }
                 }
 
                 #region 功能键按压情况
                 if (keyString == Key.CONTROL || keyString == Key.LCONTROL || keyString == Key.RCONTROL)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _ctrlHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_ctrlHolding > 0)
                         {
@@ -165,11 +190,11 @@ namespace SuperIo
                 }
                 if (keyString == Key.MENU || keyString == Key.LMENU || keyString == Key.RMENU)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _altHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_altHolding > 0)
                         {
@@ -179,11 +204,11 @@ namespace SuperIo
                 }
                 if (keyString == Key.SHIFT || keyString == Key.LSHIFT || keyString == Key.RSHIFT)
                 {
-                    if (wParam == WM_KEYDOWN)
+                    if (isKeyDown)
                     {
                         _shiftHolding++;
                     }
-                    if (wParam == WM_KEYUP)
+                    if (isKeyUp)
                     {
                         if (_shiftHolding > 0)
                         {
@@ -201,21 +226,13 @@ namespace SuperIo
                           (handler.Shift && _shiftHolding == 0)))
                     {
                         // 如果应当按下的功能键没有按下 那么此handler实际上没有被激活 反之 就是激活了
-                        if (wParam == WM_KEYDOWN)//检测到键盘按下
+                        if (isKeyDown)//检测到键盘按下
                         {
-                            if (!handler.IsDown)
-                            {
-                                handler.IsDown = true;
-                                handler.OnKeyDown();
-                            }
+                            handler.OnKeyDown();
                         }
-                        if (wParam == WM_KEYUP)//检测到键盘抬起
+                        if (isKeyUp)//检测到键盘抬起
                         {
-                            if (handler.IsDown)
-                            {
-                                handler.IsDown = false;
-                                handler.OnKeyUp();
-                            }
+                            handler.OnKeyUp();
                         }
                     }
                 }
