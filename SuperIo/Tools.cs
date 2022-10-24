@@ -41,13 +41,13 @@ namespace SuperIo
         /// Get the actual size of the primary screen. Regardless of the *Screen Scale*.
         /// </summary>
         /// <returns></returns>
-        public static Rectangle GetSreenRealSize()
+        public static Size GetSreenRealSize()
         {
             var hdc = GetDC(GetDesktopWindow());
             int nWidth = GetDeviceCaps(hdc, DESKTOPHORZRES);
             int nHeight = GetDeviceCaps(hdc, DESKTOPVERTRES);
             ReleaseDC(IntPtr.Zero, hdc);
-            Rectangle result = new Rectangle(0, 0, nWidth, nHeight);
+            Size result = new Size(nWidth, nHeight);
             return result;
         }
     }

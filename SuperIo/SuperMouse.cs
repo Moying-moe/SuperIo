@@ -54,7 +54,7 @@ namespace SuperIo
             try
             {
                 //Rectangle bound = Screen.PrimaryScreen.Bounds;
-                Rectangle bound = Tools.GetSreenRealSize();
+                Size bound = Tools.GetSreenRealSize();
                 _screenWidth = bound.Width;
                 _screenHeight = bound.Height;
             }
