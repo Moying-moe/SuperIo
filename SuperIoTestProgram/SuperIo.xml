@@ -4,6 +4,17 @@
         <name>SuperIo</name>
     </assembly>
     <members>
+        <member name="M:SuperIo.SuperIo.Initialize">
+            <summary>
+            Initialize all modules.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperIo.Close">
+            <summary>
+            Close all modules.
+            </summary>
+        </member>
         <member name="M:SuperIo.SuperKeyboard.Initialize">
             <summary>
             Initialize the SuperKeyboard module.
@@ -1064,7 +1075,6 @@
         <member name="M:SuperIo.SuperScreen.ColorDifference(System.Drawing.Color,System.Drawing.Color)">
             <summary>
             <para>Return the color distance between 2 colors.</para>
-            <para>Formula: Diff = (R1 - R2)^2 + (G1 - G2)^2 + (B1 - B2)^2 / (255^2 * 3)</para>
             </summary>
             <param name="c1"></param>
             <param name="c2"></param>

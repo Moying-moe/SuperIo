@@ -237,7 +237,7 @@ Color prettyRed = Color.FromArgb(255,90,90);
 
 SuperScreen.ColorDifference(black, black);      // => 0.0
 SuperScreen.ColorDifference(black, white);      // => 1.0
-SuperScreen.ColorDifference(white, prettyRed);  // => 0.528321...
+SuperScreen.ColorDifference(white, prettyRed);  // => 0.528436...
 ```
 
 Call `IsColorAt(int x, int y, Color target)` or `IsColorAt(int x, int y, Color target, double similarity)` to get if the color at (x, y) is similar to (or same as) target color.

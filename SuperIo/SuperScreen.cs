@@ -39,17 +39,17 @@ namespace SuperIo
 
         /// <summary>
         /// <para>Return the color distance between 2 colors.</para>
-        /// <para>Formula: Diff = (R1 - R2)^2 + (G1 - G2)^2 + (B1 - B2)^2 / (255^2 * 3)</para>
         /// </summary>
         /// <param name="c1"></param>
         /// <param name="c2"></param>
         /// <returns>Difference. Range from 0 to 1.</returns>
         public static double ColorDifference(Color c1, Color c2)
         {
-            double dR = Math.Pow(c1.R - c2.R, 2);
-            double dG = Math.Pow(c1.G - c2.G, 2);
-            double dB = Math.Pow(c1.B - c2.B, 2);
-            return Math.Sqrt((dR + dG + dB) / 195075d);
+            long rmean = ((long)c1.R + (long)c2.R) / 2;
+            long r = (long)c1.R - (long)c2.R;
+            long g = (long)c1.G - (long)c2.G;
+            long b = (long)c1.B - (long)c2.B;
+            return Math.Sqrt((((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8)) / 764.833315173967;
         }
 
         /// <summary>
