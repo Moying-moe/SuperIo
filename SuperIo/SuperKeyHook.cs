@@ -277,6 +277,13 @@ namespace SuperIo
         {
             return _invokeMethods.Remove(handlerId);
         }
+        /// <summary>
+        /// Remove all global key handlers.
+        /// </summary>
+        public void RemoveAllGlobalKeyHandlers()
+        {
+            _invokeMethods.Clear();
+        }
 
         public static class Key
         {
