@@ -13,6 +13,8 @@ namespace SuperIo
 {
     public static class SuperIo
     {
+        public static readonly string VERSION = "v1.0.0-alpha";
+
         /// <summary>
         /// Initialize all modules.
         /// </summary>

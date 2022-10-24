@@ -1,7 +1,7 @@
 # SuperIo
 
 [![License-GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-orange)](https://github.com/Moying-moe/SuperIo/blob/master/LICENSE)
-![version v0.3.0](https://img.shields.io/badge/version-v0.3.0--alpha-green)
+![version v1.0.0](https://img.shields.io/badge/version-v1.0.0--alpha-green)
 
 ---
 
@@ -330,6 +330,13 @@ else
 Console.WriteLine(SuperKeyHook.IsInitialized); // => true
 ```
 
+You need to dispose `SuperKeyHook` when you application are going to terminate.
+
+```C#
+// in app terminate event
+SuperKeyHook.Dispose();
+```
+
 Then, register hotkeys you want to bind.
 
 ```C#
@@ -471,3 +478,21 @@ SuperKeyHook.AddGlobalKeyHandler(
 ```
 
 In this example, when user press **Q**, nothing will happen.
+
+### Other
+
+You can get the VERSION string by this way.
+
+```C#
+Console.WriteLine(SuperIo.SuperIo.VERSION);
+```
+
+You can initialize each module one by one. Or you can use this shortcut.
+
+```C#
+// when app start
+SuperIo.SuperIo.Initialize() // return true if all 4 modules initialize successfully.
+
+// when app close
+SuperIo.SuperIo.Dispose()
+```
