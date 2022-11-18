@@ -13,27 +13,6 @@ namespace SuperIo
 {
     public static class SuperIo
     {
-        public static readonly string VERSION = "v1.0.0-alpha";
-
-        /// <summary>
-        /// Initialize all modules.
-        /// </summary>
-        /// <returns></returns>
-        public static bool Initialize()
-        {
-            bool keyboardFlag = SuperKeyboard.Initialize();
-            bool mouseFlag = SuperMouse.Initialize();
-            bool screenFlag = SuperScreen.Initialize();
-            bool keyhookFlag = SuperKeyHook.Initialize();
-            return keyboardFlag && mouseFlag && screenFlag && keyhookFlag;
-        }
-
-        /// <summary>
-        /// Dispose all modules.
-        /// </summary>
-        public static void Dispose()
-        {
-            SuperKeyHook.Dispose();
-        }
+        public static readonly string VERSION = "v1.1.0-alpha";
     }
 }

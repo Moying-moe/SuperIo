@@ -9,8 +9,19 @@ using System.Runtime.InteropServices;
 
 namespace SuperIo
 {
-    public static class SuperScreen
+    /// <summary>
+    /// Provide the ability to get the content on the screen.
+    /// </summary>
+    public sealed class SuperScreen
     {
+        #region Singleton
+        private static readonly Lazy<SuperScreen> lazy = new Lazy<SuperScreen>(() => new SuperScreen());
+        /// <summary>
+        /// Instance
+        /// </summary>
+        public static SuperScreen Instance { get { return lazy.Value; } }
+        #endregion
+
         #region DllImport
         [DllImport("user32.dll")]
         static extern IntPtr GetDC(IntPtr hwnd);
@@ -23,26 +34,24 @@ namespace SuperIo
                                           IntPtr hdcSrc, int nXSrc, int nYSrc, int dwRop);
         #endregion
 
-        private static bool _initialized = false;        // 模块是否已经初始化
-        private static int _screenWidth = -1;
-        private static int _screenHeight = -1;
+        private bool _initialized = false;        // 模块是否已经初始化
+        private int _screenWidth = -1;
+        private int _screenHeight = -1;
 
-        public static bool IsInitialized { get => _initialized; }
+        /// <summary>
+        /// Is the module initialized successfully
+        /// </summary>
+        public bool IsInitialized { get => _initialized; }
 
         #region ArgumentsSetup
         /// <summary>
         /// Initialize the SuperMouse module.
         /// </summary>
         /// <returns></returns>
-        public static bool Initialize()
+        private SuperScreen()
         {
-            if (_initialized)
-            {
-                return true;
-            }
             try
             {
-                //Rectangle bound = Screen.PrimaryScreen.Bounds;
                 Size bound = Tools.GetSreenRealSize();
                 _screenWidth = bound.Width;
                 _screenHeight = bound.Height;
@@ -50,52 +59,55 @@ namespace SuperIo
             catch
             {
                 // Get primary screen size failed.
-                return _initialized;
+                return;
             }
 
             _initialized = true;
-            return _initialized;
         }
 
         /// <summary>
-        /// <para>Initialize the SuperMouse module.</para>
+        /// <para>Set the screen size.</para>
         /// <para>If auto initialization get the wrong screen size, or you have multiple monitor. Please call this method.</para>
         /// </summary>
         /// <param name="_screenWidth">screen width</param>
         /// <param name="_screenHeight">screen height</param>
         /// <returns></returns>
-        public static bool Initialize(int _screenWidth, int _screenHeight)
+        public void SetScreenSize(int _screenWidth, int _screenHeight)
         {
-            if (_initialized)
-            {
-                return true;
-            }
-
-            SuperScreen._screenWidth = _screenWidth;
-            SuperScreen._screenHeight = _screenHeight;
-
-            _initialized = true;
-            return _initialized;
+            this._screenWidth = _screenWidth;
+            this._screenHeight = _screenHeight;
         }
 
-        public static int GetScreenWidth()
+        /// <summary>
+        /// Get the screen width.
+        /// </summary>
+        /// <returns></returns>
+        public int GetScreenWidth()
         {
             return _screenWidth;
         }
-        public static int GetScreenHeight()
+        /// <summary>
+        /// Get the screen height.
+        /// </summary>
+        /// <returns></returns>
+        public int GetScreenHeight()
         {
             return _screenHeight;
         }
-        public static Size GetScreenSize()
+        /// <summary>
+        /// Get the screen size.
+        /// </summary>
+        /// <returns></returns>
+        public Size GetScreenSize()
         {
             return new Size(_screenWidth, _screenHeight);
         }
 
-        private static void CheckInitialization()
+        private void CheckInitialization()
         {
             if (!_initialized)
             {
-                throw new Exception("SuperMouse has not initialized yet. Or initialization failed. Try to call `SuperMouse.Initialize()` first.");
+                throw new Exception("SuperMouse initialization failed.");
             }
         }
         #endregion
@@ -106,7 +118,7 @@ namespace SuperIo
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static Color GetPixelColor(int x, int y)
+        public Color GetPixelColor(int x, int y)
         {
             CheckInitialization();
 
@@ -125,7 +137,7 @@ namespace SuperIo
         /// <param name="c1"></param>
         /// <param name="c2"></param>
         /// <returns>Difference. Range from 0 to 1.</returns>
-        public static double ColorDifference(Color c1, Color c2)
+        public double ColorDifference(Color c1, Color c2)
         {
             CheckInitialization();
 
@@ -144,7 +156,7 @@ namespace SuperIo
         /// <param name="y">Pixel position y</param>
         /// <param name="target">Color for comparison</param>
         /// <returns></returns>
-        public static bool IsColorAt(int x, int y, Color target)
+        public bool IsColorAt(int x, int y, Color target)
         {
             CheckInitialization();
 
@@ -159,7 +171,7 @@ namespace SuperIo
         /// <param name="target">Color for comparison</param>
         /// <param name="similarity">Color similarity limit. Range from 0 to 1. (1 means just the same color)</param>
         /// <returns></returns>
-        public static bool IsColorAt(int x, int y, Color target, double similarity)
+        public bool IsColorAt(int x, int y, Color target, double similarity)
         {
             CheckInitialization();
 
@@ -171,7 +183,7 @@ namespace SuperIo
         /// Get screenshot.
         /// </summary>
         /// <returns></returns>
-        public static Bitmap GetScreen()
+        public Bitmap GetScreen()
         {
             CheckInitialization();
 
@@ -194,7 +206,7 @@ namespace SuperIo
             FromCenter
         }
 
-        private static readonly Point POINT_NOT_FOUND = new Point(-1, -1);
+        private readonly Point POINT_NOT_FOUND = new Point(-1, -1);
 
         #region SearchColor
         /// <summary>
@@ -204,7 +216,7 @@ namespace SuperIo
         /// <param name="direction"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public static Point SearchColor(Color color, SearchDirection direction, Rectangle area)
+        public Point SearchColor(Color color, SearchDirection direction, Rectangle area)
         {
             CheckInitialization();
 
@@ -236,7 +248,7 @@ namespace SuperIo
         /// <param name="area"></param>
         /// <param name="similarity"></param>
         /// <returns></returns>
-        public static Point SearchColor(Color color, SearchDirection direction, Rectangle area, double similarity)
+        public Point SearchColor(Color color, SearchDirection direction, Rectangle area, double similarity)
         {
             CheckInitialization();
 
@@ -266,7 +278,7 @@ namespace SuperIo
         /// <param name="color"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public static Point SearchColor(Color color, SearchDirection direction)
+        public Point SearchColor(Color color, SearchDirection direction)
         {
             CheckInitialization();
 
@@ -299,7 +311,7 @@ namespace SuperIo
         /// <param name="direction"></param>
         /// <param name="similarity"></param>
         /// <returns></returns>
-        public static Point SearchColor(Color color, SearchDirection direction, double similarity)
+        public Point SearchColor(Color color, SearchDirection direction, double similarity)
         {
             CheckInitialization();
 
@@ -325,7 +337,7 @@ namespace SuperIo
             return POINT_NOT_FOUND;
         }
 
-        private static Point SearchFromCorner(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity=-1)
+        private Point SearchFromCorner(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity=-1)
         {
             if (direction != SearchDirection.FromLeftTop &&
                 direction != SearchDirection.FromRightTop &&
@@ -377,7 +389,7 @@ namespace SuperIo
             return POINT_NOT_FOUND;
         }
 
-        private static Point SearchHorizontal(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity = -1)
+        private Point SearchHorizontal(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity = -1)
         {
             if (direction != SearchDirection.LeftToRight &&
                 direction != SearchDirection.RightToLeft)
@@ -422,7 +434,7 @@ namespace SuperIo
             return POINT_NOT_FOUND;
         }
 
-        private static Point SearchVertical(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity = -1)
+        private Point SearchVertical(Bitmap bitmap, Color color, SearchDirection direction, Rectangle area, bool accurate, double similarity = -1)
         {
             if (direction != SearchDirection.TopToBottom &&
                 direction != SearchDirection.BottomToTop)

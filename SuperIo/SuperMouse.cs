@@ -10,8 +10,19 @@ using System.Threading;
 
 namespace SuperIo
 {
-    public static class SuperMouse
+    /// <summary>
+    /// Provide the ability to control the mouse.
+    /// </summary>
+    public sealed class SuperMouse
     {
+        #region Singleton
+        private static readonly Lazy<SuperMouse> lazy = new Lazy<SuperMouse>(() => new SuperMouse());
+        /// <summary>
+        /// Instance
+        /// </summary>
+        public static SuperMouse Instance { get { return lazy.Value; } }
+        #endregion
+
         #region DllImport
         [DllImport("user32")]
         static extern int mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
@@ -35,24 +46,22 @@ namespace SuperIo
         const int MOUSEEVENTF_WHEEL = 0x0800;
         #endregion
 
-        private static bool _initialized = false;        // 模块是否已经初始化
-        private static int _multClickDelay = 50;       // 连续点击时，每次之间的间隔
-        private static int _screenWidth = -1;
-        private static int _screenHeight = -1;
+        private bool _initialized = false;        // 模块是否已经初始化
+        private int _multClickDelay = 50;       // 连续点击时，每次之间的间隔
+        private int _screenWidth = -1;
+        private int _screenHeight = -1;
 
-        public static bool IsInitialized { get => _initialized; }
+        /// <summary>
+        /// Is the module initialized successfully
+        /// </summary>
+        public bool IsInitialized { get => _initialized; }
 
         #region ArgumentsSetup
         /// <summary>
         /// Initialize the SuperMouse module.
         /// </summary>
-        /// <returns></returns>
-        public static bool Initialize()
+        private SuperMouse()
         {
-            if (_initialized)
-            {
-                return true;
-            }
             try
             {
                 //Rectangle bound = Screen.PrimaryScreen.Bounds;
@@ -63,39 +72,30 @@ namespace SuperIo
             catch
             {
                 // Get primary screen size failed.
-                return _initialized;
+                _initialized = false;
+                return;
             }
             
             _initialized = true;
-            return _initialized;
         }
 
         /// <summary>
-        /// <para>Initialize the SuperMouse module.</para>
+        /// <para>Set the screen size.</para>
         /// <para>If auto initialization get the wrong screen size, or you have multiple monitor. Please call this method.</para>
         /// </summary>
         /// <param name="_screenWidth">screen width</param>
         /// <param name="_screenHeight">screen height</param>
-        /// <returns></returns>
-        public static bool Initialize(int _screenWidth, int _screenHeight)
+        public void SetScreenSize(int _screenWidth, int _screenHeight)
         {
-            if (_initialized)
-            {
-                return true;
-            }
-
-            SuperMouse._screenWidth = _screenWidth;
-            SuperMouse._screenHeight = _screenHeight;
-
-            _initialized = true;
-            return _initialized;
+            this._screenWidth = _screenWidth;
+            this._screenHeight = _screenHeight;
         }
 
         /// <summary>
         /// Delay between two clicks (or more).
         /// </summary>
         /// <returns>Multiple Click Delay</returns>
-        public static int GetMultClickDelay()
+        public int GetMultClickDelay()
         {
             return _multClickDelay;
         }
@@ -103,28 +103,40 @@ namespace SuperIo
         /// Delay between two clicks (or more).
         /// </summary>
         /// <param name="delay">New delay</param>
-        public static void SetMultClickDelay(int delay)
+        public void SetMultClickDelay(int delay)
         {
             _multClickDelay = delay;
         }
 
-        private static void CheckInitialization()
+        private void CheckInitialization()
         {
             if (!_initialized)
             {
-                throw new Exception("SuperMouse has not initialized yet. Or initialization failed. Try to call `SuperMouse.Initialize()` first.");
+                throw new Exception("SuperMouse initialization failed.");
             }
         }
 
-        public static int GetScreenWidth()
+        /// <summary>
+        /// Get the screen width.
+        /// </summary>
+        /// <returns></returns>
+        public int GetScreenWidth()
         {
             return _screenWidth;
         }
-        public static int GetScreenHeight()
+        /// <summary>
+        /// Get the screen height.
+        /// </summary>
+        /// <returns></returns>
+        public int GetScreenHeight()
         {
             return _screenHeight;
         }
-        public static Size GetScreenSize()
+        /// <summary>
+        /// Get the screen size.
+        /// </summary>
+        /// <returns></returns>
+        public Size GetScreenSize()
         {
             return new Size(_screenWidth, _screenHeight);
         }
@@ -135,7 +147,7 @@ namespace SuperIo
         /// </summary>
         /// <param name="dx"></param>
         /// <param name="dy"></param>
-        public static void MoveRelative(int dx, int dy)
+        public void MoveRelative(int dx, int dy)
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_MOVE, dx, dy, 0, 0);
@@ -146,7 +158,7 @@ namespace SuperIo
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public static void MoveTo(int x, int y)
+        public void MoveTo(int x, int y)
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE, x*65535/_screenWidth, y*65535/_screenHeight, 0, 0);
@@ -155,7 +167,7 @@ namespace SuperIo
         /// <summary>
         /// Left button presses down.
         /// </summary>
-        public static void LButtonDown()
+        public void LButtonDown()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
@@ -163,7 +175,7 @@ namespace SuperIo
         /// <summary>
         /// Left button releases.
         /// </summary>
-        public static void LButtonUp()
+        public void LButtonUp()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
@@ -171,7 +183,7 @@ namespace SuperIo
         /// <summary>
         /// Left button clicks.(one time)
         /// </summary>
-        public static void LButtonClick()
+        public void LButtonClick()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
@@ -180,7 +192,7 @@ namespace SuperIo
         /// Left button clicks multiple times.
         /// </summary>
         /// <param name="times"></param>
-        public static void LButtonClick(int times)
+        public void LButtonClick(int times)
         {
             CheckInitialization();
             for (int i = 0; i < times; i++) 
@@ -196,7 +208,7 @@ namespace SuperIo
         /// <summary>
         /// Right button presses down.
         /// </summary>
-        public static void RButtonDown()
+        public void RButtonDown()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
@@ -204,7 +216,7 @@ namespace SuperIo
         /// <summary>
         /// Right button releases.
         /// </summary>
-        public static void RButtonUp()
+        public void RButtonUp()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
@@ -212,7 +224,7 @@ namespace SuperIo
         /// <summary>
         /// Right button clicks.(one time)
         /// </summary>
-        public static void RButtonClick()
+        public void RButtonClick()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
@@ -221,7 +233,7 @@ namespace SuperIo
         /// Right button clicks multiple times.
         /// </summary>
         /// <param name="times"></param>
-        public static void RButtonClick(int times)
+        public void RButtonClick(int times)
         {
             CheckInitialization();
             for (int i = 0; i < times; i++)
@@ -237,7 +249,7 @@ namespace SuperIo
         /// <summary>
         /// Middle button(mouse wheel) pressed down.
         /// </summary>
-        public static void MButtonDown()
+        public void MButtonDown()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
@@ -245,7 +257,7 @@ namespace SuperIo
         /// <summary>
         /// Middle button(mouse wheel) releases.
         /// </summary>
-        public static void MButtonUp()
+        public void MButtonUp()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
@@ -253,7 +265,7 @@ namespace SuperIo
         /// <summary>
         /// Middle button(mouse wheel) clicks.(one time)
         /// </summary>
-        public static void MButtonClick()
+        public void MButtonClick()
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
@@ -262,7 +274,7 @@ namespace SuperIo
         /// Middle button(mouse wheel) clicks multiple times.
         /// </summary>
         /// <param name="times"></param>
-        public static void MButtonClick(int times)
+        public void MButtonClick(int times)
         {
             CheckInitialization();
             for (int i = 0; i < times; i++)
@@ -279,7 +291,7 @@ namespace SuperIo
         /// Mouse wheel scrolls up or down. Depends on value given.
         /// </summary>
         /// <param name="value">Scroll up if value is positive. Down if negative</param>
-        public static void Scroll(int value)
+        public void Scroll(int value)
         {
             CheckInitialization();
             mouse_event(MOUSEEVENTF_WHEEL, 0, 0, value, 0);
@@ -287,7 +299,7 @@ namespace SuperIo
         /// <summary>
         /// Simply scroll up.
         /// </summary>
-        public static void ScrollUp()
+        public void ScrollUp()
         {
             CheckInitialization();
             Scroll(120);
@@ -295,7 +307,7 @@ namespace SuperIo
         /// <summary>
         /// Simply scroll down.
         /// </summary>
-        public static void ScrollDown()
+        public void ScrollDown()
         {
             CheckInitialization();
             Scroll(-120);

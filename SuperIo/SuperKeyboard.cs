@@ -8,33 +8,41 @@ using System.Threading;
 
 namespace SuperIo
 {
-    public static class SuperKeyboard
+    /// <summary>
+    /// Provide the ability to control the keyboard
+    /// </summary>
+    public sealed class SuperKeyboard
     {
-        private static bool _initialized = false;        // 模块是否已经初始化
-        private static int _keyPressDelay = 50;        // 调用KeyPress时，按下到弹起的时间间隔
+        #region Singleton
+        private static readonly Lazy<SuperKeyboard> lazy = new Lazy<SuperKeyboard>(() => new SuperKeyboard());
+        /// <summary>
+        /// Instance
+        /// </summary>
+        public static SuperKeyboard Instance { get { return lazy.Value; } }
+        #endregion
 
-        public static bool IsInitialized { get => _initialized; }
+        private bool _initialized = false;        // 模块是否已经初始化
+        private int _keyPressDelay = 50;        // 调用KeyPress时，按下到弹起的时间间隔
+
+        /// <summary>
+        /// Is the module initialized successfully
+        /// </summary>
+        public bool IsInitialized { get => _initialized; }
 
         #region ArgumentsSetup
         /// <summary>
         /// Initialize the SuperKeyboard module.
         /// </summary>
-        /// <returns></returns>
-        public static bool Initialize()
+        private SuperKeyboard()
         {
-            if (_initialized)
-            {
-                return true;
-            }
             _initialized = WinRing0.init();
-            return _initialized;
         }
 
         /// <summary>
         /// The delay between a key's *down* and *up* when method `KeyPress` is called.
         /// </summary>
         /// <returns></returns>
-        public static int GetKeyPressDelay()
+        public int GetKeyPressDelay()
         {
             return _keyPressDelay;
         }
@@ -42,16 +50,16 @@ namespace SuperIo
         /// The delay between a key's *down* and *up* when method `KeyPress` is called.
         /// </summary>
         /// <param name="delay">New delay</param>
-        public static void SetKeyPressDelay(int delay)
+        public void SetKeyPressDelay(int delay)
         {
             _keyPressDelay = delay;
         }
 
-        private static void CheckInitialization()
+        private void CheckInitialization()
         {
             if (!_initialized)
             {
-                throw new Exception("SuperKeyboard has not initialized yet. Or initialization failed. Try to call `SuperKeyboard.Initialize()` first.");
+                throw new Exception("SuperKeyboard initialization failed.");
             }
         }
         #endregion
@@ -61,7 +69,7 @@ namespace SuperIo
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-        public static void KeyDown(byte keycode)
+        public void KeyDown(byte keycode)
         {
             CheckInitialization();
             WinRing0.KeyDown(keycode);
@@ -72,7 +80,7 @@ namespace SuperIo
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-        public static void KeyUp(byte keycode)
+        public void KeyUp(byte keycode)
         {
             CheckInitialization();
             WinRing0.KeyUp(keycode);
@@ -83,7 +91,7 @@ namespace SuperIo
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
-        public static void KeyPress(byte keycode)
+        public void KeyPress(byte keycode)
         {
             CheckInitialization();
             WinRing0.KeyDown(keycode);
@@ -98,7 +106,7 @@ namespace SuperIo
         /// </summary>
         /// <param name="keycode">Key code. Can be found in SuperKeyboard.Key</param>
         /// <param name="modFlags">ModKey flag(s).</param>
-        public static void KeyPress(byte keycode, int modFlags)
+        public void KeyPress(byte keycode, int modFlags)
         {
             CheckInitialization();
 
@@ -184,7 +192,7 @@ namespace SuperIo
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperKeyHook!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
-        public static void KeyCombSeq(params byte[] keycodes)
+        public void KeyCombSeq(params byte[] keycodes)
         {
             KeyCombSeq(_keyPressDelay, keycodes);
         }
@@ -199,7 +207,7 @@ namespace SuperIo
         /// </summary>
         /// <param name="keycodes">Key code. Can be found in SuperKeyboard.Key</param>
         /// <param name="interval">Interval between two keys.</param>
-        public static void KeyCombSeq(int interval, params byte[] keycodes)
+        public void KeyCombSeq(int interval, params byte[] keycodes)
         {
             int count = keycodes.Length;
             for (int i = 0; i < count; i++)
