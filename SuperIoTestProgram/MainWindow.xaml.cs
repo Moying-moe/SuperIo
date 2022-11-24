@@ -53,7 +53,7 @@ namespace SuperIoTestProgram
             {
                 DebugLog();
 
-                bool flagKb = SuperKeyboard.IsInitialized;
+                bool flagKb = SuperKeyboard.Instance.IsInitialized;
                 
 
                 DebugLog("SuperKeyboard initialize: " + flagKb);
@@ -63,29 +63,29 @@ namespace SuperIoTestProgram
                     Thread.Sleep(3000);
 
                     DebugLog("- input A");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_A);
                     Thread.Sleep(1000);
 
                     DebugLog("- input B");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_B);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_B);
                     Thread.Sleep(1000);
 
                     DebugLog("- input Shift+M");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_M, SuperKeyboard.ModKey.SHIFT);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_M, SuperIo.SuperIo.ModKey.SHIFT);
                     // or
                     //SuperKeyboard.KeyCombSeq(25, SuperKeyboard.Key.VK_SHIFT, SuperKeyboard.Key.VK_M);
                     Thread.Sleep(1000);
 
                     DebugLog("- input C");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_C);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_C);
                     Thread.Sleep(1000);
 
                     DebugLog("- backspace");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_BACK);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_BACK);
                     Thread.Sleep(1000);
 
                     DebugLog("- press Ctrl+Alt+A");
-                    SuperKeyboard.KeyPress(SuperKeyboard.Key.VK_A, SuperKeyboard.ModKey.CTRL | SuperKeyboard.ModKey.ALT);
+                    SuperKeyboard.Instance.KeyPress(SuperIo.SuperIo.Key.VK_A, SuperIo.SuperIo.ModKey.CTRL | SuperIo.SuperIo.ModKey.ALT);
                     Thread.Sleep(1000);
 
                     DebugLog("SuperKeyboard Test done.");
@@ -99,7 +99,7 @@ namespace SuperIoTestProgram
             {
                 DebugLog();
 
-                bool flagMs = SuperMouse.IsInitialized;
+                bool flagMs = SuperMouse.Instance.IsInitialized;
                 DebugLog("SuperMouse initialize: " + flagMs);
 
                 if (flagMs)
@@ -108,27 +108,27 @@ namespace SuperIoTestProgram
                     Thread.Sleep(3000);
 
                     DebugLog("- move right");
-                    SuperMouse.MoveRelative(50, 0);
+                    SuperMouse.Instance.MoveRelative(50, 0);
                     Thread.Sleep(1000);
 
                     DebugLog("- move left-down");
-                    SuperMouse.MoveRelative(-50, 50);
+                    SuperMouse.Instance.MoveRelative(-50, 50);
                     Thread.Sleep(1000);
 
                     DebugLog("- move to the center of the screen");
-                    SuperMouse.MoveTo(960, 540);
+                    SuperMouse.Instance.MoveTo(960, 540);
                     Thread.Sleep(1000);
 
                     DebugLog("- scroll down");
-                    SuperMouse.ScrollDown();
+                    SuperMouse.Instance.ScrollDown();
                     Thread.Sleep(1000);
 
                     DebugLog("- double click");
-                    SuperMouse.LButtonClick(2);
+                    SuperMouse.Instance.LButtonClick(2);
                     Thread.Sleep(1000);
 
                     DebugLog("- right click.");
-                    SuperMouse.RButtonClick();
+                    SuperMouse.Instance.RButtonClick();
                 }
             });
         }
@@ -137,37 +137,37 @@ namespace SuperIoTestProgram
         {
             DebugLog();
 
-            bool flagSc = SuperScreen.IsInitialized;
+            bool flagSc = SuperScreen.Instance.IsInitialized;
             DebugLog("SuperScreen initialize: " + flagSc); 
 
             if (flagSc)
             {
-                Color color = SuperScreen.GetPixelColor(960, 540);
+                Color color = SuperScreen.Instance.GetPixelColor(960, 540);
                 DebugLog("Color at (960,540) is: " + color.R + "," + color.G + "," + color.B);
                 Color black = Color.FromArgb(0, 0, 0);
-                DebugLog("Difference between this color * (0,0,0) is: " + SuperScreen.ColorDifference(color, black));
+                DebugLog("Difference between this color * (0,0,0) is: " + SuperScreen.Instance.ColorDifference(color, black));
 
-                System.Drawing.Point pos = SuperScreen.SearchColor(black, SuperScreen.SearchDirection.FromLeftTop);
+                System.Drawing.Point pos = SuperScreen.Instance.SearchColor(black, SuperScreen.SearchDirection.FromLeftTop);
                 DebugLog("Find color * (0,0,0) in Position (" + pos.X + "," + pos.Y + ")");
-                if (SuperMouse.IsInitialized)
+                if (SuperMouse.Instance.IsInitialized)
                 {
-                    SuperMouse.MoveTo(pos.X, pos.Y);
+                    SuperMouse.Instance.MoveTo(pos.X, pos.Y);
                 }
             }
         }
 
-        private void BtnKeyHook_Click(object sender, RoutedEventArgs e)
+        private void BtnEventKey_Click(object sender, RoutedEventArgs e)
         {
             DebugLog();
 
-            bool flagKh = SuperKeyHook.IsInitialized;
-            DebugLog("SuperKeyHook initialize: " + flagKh);
+            bool flagEvt = SuperEvent.Instance.IsInitialized;
+            DebugLog("SuperEvent initialize: " + flagEvt);
 
-            if (flagKh)
+            if (flagEvt)
             {
-                SuperKeyHook.Register(
+                SuperEvent.Instance.RegisterKey(
                     ctrl: true,
-                    keyString: SuperKeyHook.Key.Q,
+                    key: SuperIo.SuperIo.Key.VK_Q,
                     keyDownHandler: delegate ()
                     {
                         DebugLog("down: Ctrl+Q");
@@ -179,10 +179,10 @@ namespace SuperIoTestProgram
                 );
                 DebugLog("Hooked on \"Ctrl+Q\".");
 
-                SuperKeyHook.AddGlobalKeyHandler(
-                    delegate (string keyString, bool isKeyDown, bool isKeyUp)
+                SuperEvent.Instance.AddGlobalKeyHandler(
+                    delegate (byte key, bool isKeyDown, bool isKeyUp)
                     {
-                        DebugLog("GlobalKeyHandler: " + keyString + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
+                        DebugLog("GlobalKeyHandler: " + key + "," + (isKeyDown ? "KeyDown," : "") + (isKeyUp ? "KeyUp" : ""));
                         return true;
                     }
                 );
@@ -190,14 +190,46 @@ namespace SuperIoTestProgram
             }
         }
 
+        private void BtnEventMouse_Click(object sender, RoutedEventArgs e)
+        {
+            DebugLog();
+
+            bool flagEvt = SuperEvent.Instance.IsInitialized;
+            DebugLog("SuperEvent initialize: " + flagEvt);
+
+            if (flagEvt)
+            {
+                SuperEvent.Instance.RegisterMouse(
+                    mouseEvent: SuperIo.SuperIo.Mouse.XBUTTON1DOWN,
+                    handler: delegate ()
+                    {
+                        DebugLog("XB1 down");
+                    }
+                );
+                DebugLog("Hooked on XB1_down");
+
+                SuperEvent.Instance.AddGlobalMouseHandler(
+                    delegate (byte mouseEvent)
+                    {
+                        if (mouseEvent != SuperIo.SuperIo.Mouse.MOUSEMOVE)
+                        {
+                            SuperEvent.POINT position = SuperEvent.Instance.MouseLastPosition;
+                            DebugLog("mouse event code: " + mouseEvent + " at (" + position.x + "," + position.y + ")");
+                        }
+                        return true;
+                    }
+                );
+            }
+        }
+
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
-            SuperIo.SuperIo.Dispose();
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            SuperIo.SuperIo.Initialize();
+            
         }
     }
 }
