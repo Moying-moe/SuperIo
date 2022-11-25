@@ -112,11 +112,13 @@ namespace SuperIo
         private int _setWindowsHookExReturnKeyBoard;
         private HOOKPROC _keyboardProc;
         private int _keyboardInvokeId = 0;
+        private int _keyboardEventId = 0;
 
         // 鼠标hook
         private int _setWindowsHookExReturnMouse;
         private HOOKPROC _mouseProc;
         private int _mouseInvokeId = 0;
+        private int _mouseEventId = 0;
 
         /// <summary>
         /// Initialization
@@ -218,7 +220,8 @@ namespace SuperIo
             public EventHandler OnKeyUp;
         }
 
-        private Dictionary<byte, KeyEventHandlerStruct> _registeredKeyEvents = new Dictionary<byte, KeyEventHandlerStruct>(); // 注册的事件
+        private Dictionary<byte, Dictionary<int, KeyEventHandlerStruct>> _registeredKeyEvents = new Dictionary<byte, Dictionary<int, KeyEventHandlerStruct>>(); // 注册的事件
+        private Dictionary<int, byte> _keyEventIdToKey = new Dictionary<int, byte>(); // eventId到key的映射
         private Dictionary<int, GlobalKeyHandler> _invokeKeyMethods = new Dictionary<int, GlobalKeyHandler>(); // 注入的方法
         private HashSet<byte> _keyStatus = new HashSet<byte>(); // 每个键的按压状态
 
@@ -328,21 +331,26 @@ namespace SuperIo
                 }
                 #endregion
 
-                KeyEventHandlerStruct handler;
-                if (_registeredKeyEvents.TryGetValue(key, out handler))
+                Dictionary<int, KeyEventHandlerStruct> handlerDict;
+                if (_registeredKeyEvents.TryGetValue(key, out handlerDict))
                 {
-                    if (!((handler.Ctrl && _ctrlHolding == 0) ||
-                          (handler.Alt && _altHolding == 0) ||
-                          (handler.Shift && _shiftHolding == 0)))
+                    foreach (KeyValuePair<int, KeyEventHandlerStruct> pair in handlerDict)
                     {
-                        // 如果应当按下的功能键没有按下 那么此handler实际上没有被激活 反之 就是激活了
-                        if (isKeyDown)//检测到键盘按下
+                        KeyEventHandlerStruct handler = pair.Value;
+
+                        if (!((handler.Ctrl && _ctrlHolding == 0) ||
+                              (handler.Alt && _altHolding == 0) ||
+                              (handler.Shift && _shiftHolding == 0)))
                         {
-                            handler.OnKeyDown();
-                        }
-                        if (isKeyUp)//检测到键盘抬起
-                        {
-                            handler.OnKeyUp();
+                            // 如果应当按下的功能键没有按下 那么此handler实际上没有被激活 反之 就是激活了
+                            if (isKeyDown)//检测到键盘按下
+                            {
+                                handler.OnKeyDown();
+                            }
+                            if (isKeyUp)//检测到键盘抬起
+                            {
+                                handler.OnKeyUp();
+                            }
                         }
                     }
                 }
@@ -358,19 +366,24 @@ namespace SuperIo
         /// <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperEvent!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="handler">Handler</param>
-        /// <returns>Return false if given key is already exists.</returns>
-        public bool RegisterKey(KeyEventHandlerStruct handler)
+        /// <returns>Return the registered hotkey id.</returns>
+        public int RegisterKey(KeyEventHandlerStruct handler)
         {
             CheckInitialization();
 
             byte key = handler.Key;
 
-            if (_registeredKeyEvents.ContainsKey(key))
+            int newEventId = _keyboardEventId;
+            _keyboardEventId++;
+
+            if (!_registeredKeyEvents.ContainsKey(key))
             {
-                return false;
+                _registeredKeyEvents.Add(key, new Dictionary<int, KeyEventHandlerStruct>());
             }
-            _registeredKeyEvents.Add(key, handler);
-            return true;
+            _registeredKeyEvents[key].Add(newEventId, handler);
+            _keyEventIdToKey.Add(newEventId, key);
+
+            return newEventId;
         }
         /// <summary>
         /// Register a key event.
@@ -379,8 +392,8 @@ namespace SuperIo
         /// <param name="key">Key that will trigger the handler</param>
         /// <param name="keyDownHandler">Key down handler</param>
         /// <param name="keyUpHandler">Key up handler</param>
-        /// <returns></returns>
-        public bool RegisterKey(byte key, EventHandler keyDownHandler, EventHandler keyUpHandler)
+        /// <returns>Return the registered hotkey id.</returns>
+        public int RegisterKey(byte key, EventHandler keyDownHandler, EventHandler keyUpHandler)
         {
             CheckInitialization();
 
@@ -401,8 +414,8 @@ namespace SuperIo
         /// <param name="ctrl"></param>
         /// <param name="alt"></param>
         /// <param name="shift"></param>
-        /// <returns></returns>
-        public bool RegisterKey(byte key, EventHandler keyDownHandler, EventHandler keyUpHandler,
+        /// <returns>Return the registered hotkey id.</returns>
+        public int RegisterKey(byte key, EventHandler keyDownHandler, EventHandler keyUpHandler,
             bool ctrl = false, bool alt = false, bool shift = false)
         {
             CheckInitialization();
@@ -420,19 +433,33 @@ namespace SuperIo
         /// <summary>
         /// Unregister an exist key event.
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="eventId">Event id that `RegisterKey` returned</param>
         /// <returns></returns>
-        public bool UnregisterKey(byte key)
+        public bool UnregisterKey(int eventId)
         {
             CheckInitialization();
 
-            return _registeredKeyEvents.Remove(key);
+            byte key;
+            if (!_keyEventIdToKey.TryGetValue(eventId, out key))
+            {
+                // 没有这个event id
+                return false;
+            }
+
+            _keyEventIdToKey.Remove(eventId);
+            _registeredKeyEvents[key].Remove(eventId);
+            if (_registeredKeyEvents[key].Count == 0)
+            {
+                _registeredKeyEvents.Remove(key);
+            }
+            return true;
         }
         /// <summary>
         /// Unregister all key events.
         /// </summary>
         public void UnregisterAllKeys()
         {
+            _keyEventIdToKey.Clear();
             _registeredKeyEvents.Clear();
         }
 
@@ -512,7 +539,8 @@ namespace SuperIo
 
         }
 
-        private Dictionary<byte, MouseEventHandlerStruct> _registeredMouseEvents = new Dictionary<byte, MouseEventHandlerStruct>(); // 注册的事件
+        private Dictionary<byte, Dictionary<int, MouseEventHandlerStruct>> _registeredMouseEvents = new Dictionary<byte, Dictionary<int, MouseEventHandlerStruct>>(); // 注册的事件
+        private Dictionary<int, byte> _mouseEventIdToMouse = new Dictionary<int, byte>(); // event id到mouse的映射
         private Dictionary<int, GlobalMouseHandler> _invokeMouseMethods = new Dictionary<int, GlobalMouseHandler>(); // 注入的方法
         private HashSet<byte> _mouseStatus = new HashSet<byte>(); // 每个键的按压状态
 
@@ -605,14 +633,18 @@ namespace SuperIo
                     }
                 }
 
-                MouseEventHandlerStruct handler;
-                if (_registeredMouseEvents.TryGetValue(eventValue, out handler))
+                Dictionary<int, MouseEventHandlerStruct> handlerDict;
+                if (_registeredMouseEvents.TryGetValue(eventValue, out handlerDict))
                 {
-                    if (!((handler.Ctrl && _ctrlHolding == 0) ||
-                          (handler.Alt && _altHolding == 0) ||
-                          (handler.Shift && _shiftHolding == 0)))
+                    foreach (KeyValuePair<int, MouseEventHandlerStruct> pair in handlerDict)
                     {
-                        handler.Handler();
+                        MouseEventHandlerStruct handler = pair.Value;
+                        if (!((handler.Ctrl && _ctrlHolding == 0) ||
+                              (handler.Alt && _altHolding == 0) ||
+                              (handler.Shift && _shiftHolding == 0)))
+                        {
+                            handler.Handler();
+                        }
                     }
                 }
             }
@@ -625,19 +657,22 @@ namespace SuperIo
         /// <para><b>WARNING: SuperMouse's simulation will also trigger SuperEvent!</b> This may cause unexpect recursive call!</para>
         /// </summary>
         /// <param name="handler">Handler</param>
-        /// <returns>Return false if given event is already exists.</returns>
-        public bool RegisterMouse(MouseEventHandlerStruct handler)
+        /// <returns>Return the registered mouse event id.</returns>
+        public int RegisterMouse(MouseEventHandlerStruct handler)
         {
             CheckInitialization();
 
             byte mEvent = handler.MouseEvent;
+            int newEventId = _mouseEventId;
+            _mouseEventId++;
 
-            if (_registeredMouseEvents.ContainsKey(mEvent))
+            if (!_registeredMouseEvents.ContainsKey(mEvent))
             {
-                return false;
+                _registeredMouseEvents.Add(mEvent, new Dictionary<int, MouseEventHandlerStruct>());
             }
-            _registeredMouseEvents.Add(mEvent, handler);
-            return true;
+            _registeredMouseEvents[mEvent].Add(newEventId, handler);
+            _mouseEventIdToMouse.Add(newEventId, mEvent);
+            return newEventId;
         }
         /// <summary>
         /// Register a mouse event.
@@ -645,8 +680,8 @@ namespace SuperIo
         /// </summary>
         /// <param name="mouseEvent">Mouse event that will trigger the handler</param>
         /// <param name="handler">Event handler</param>
-        /// <returns></returns>
-        public bool RegisterMouse(byte mouseEvent, EventHandler handler)
+        /// <returns>Return the registered mouse event id.</returns>
+        public int RegisterMouse(byte mouseEvent, EventHandler handler)
         {
             CheckInitialization();
 
@@ -665,8 +700,8 @@ namespace SuperIo
         /// <param name="ctrl"></param>
         /// <param name="alt"></param>
         /// <param name="shift"></param>
-        /// <returns></returns>
-        public bool RegisterMouse(byte mouseEvent, EventHandler handler, 
+        /// <returns>Return the registered mouse event id.</returns>
+        public int RegisterMouse(byte mouseEvent, EventHandler handler, 
             bool ctrl = false, bool alt = false, bool shift = false)
         {
             CheckInitialization();
@@ -683,13 +718,27 @@ namespace SuperIo
         /// <summary>
         /// Unregister an exist mouse event.
         /// </summary>
-        /// <param name="mouseEvent"></param>
+        /// <param name="eventId">Event it that `RegisterMouse` returned</param>
         /// <returns></returns>
-        public bool UnregisterMouse(byte mouseEvent)
+        public bool UnregisterMouse(int eventId)
         {
             CheckInitialization();
 
-            return _registeredMouseEvents.Remove(mouseEvent);
+
+            byte mEvent;
+            if (!_mouseEventIdToMouse.TryGetValue(eventId, out mEvent))
+            {
+                // 没有这个event id
+                return false;
+            }
+
+            _mouseEventIdToMouse.Remove(eventId);
+            _registeredMouseEvents[mEvent].Remove(eventId);
+            if (_registeredMouseEvents[mEvent].Count == 0)
+            {
+                _registeredMouseEvents.Remove(mEvent);
+            }
+            return true;
         }
         /// <summary>
         /// Unregister all mouse events.
