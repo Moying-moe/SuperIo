@@ -694,7 +694,7 @@ namespace SuperIo
         /// <summary>
         /// Unregister all mouse events.
         /// </summary>
-        public void UnregisterAllMouse()
+        public void UnregisterAllMouses()
         {
             _registeredMouseEvents.Clear();
         }
