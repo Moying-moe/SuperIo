@@ -428,6 +428,13 @@ namespace SuperIo
 
             return _registeredKeyEvents.Remove(key);
         }
+        /// <summary>
+        /// Unregister all key events.
+        /// </summary>
+        public void UnregisterAllKeys()
+        {
+            _registeredKeyEvents.Clear();
+        }
 
         /// <summary>
         /// Add a global key handler. Which will triggered everytime user press a key.
@@ -683,6 +690,13 @@ namespace SuperIo
             CheckInitialization();
 
             return _registeredMouseEvents.Remove(mouseEvent);
+        }
+        /// <summary>
+        /// Unregister all mouse events.
+        /// </summary>
+        public void UnregisterAllMouse()
+        {
+            _registeredMouseEvents.Clear();
         }
 
         /// <summary>
