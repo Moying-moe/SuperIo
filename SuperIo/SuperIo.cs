@@ -782,7 +782,7 @@ namespace SuperIo
             /// <summary>
             /// extra button 2 up
             /// </summary>
-            public static readonly byte XBUTTON2UP = 112;
+            public static readonly byte XBUTTON2UP = 12;
         }
     }
 }
