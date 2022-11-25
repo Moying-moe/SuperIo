@@ -3,11 +3,6 @@
   See LICENSE in the project root for license information.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SuperIo
 {
@@ -40,6 +35,52 @@ namespace SuperIo
         /// </summary>
         public static class Key
         {
+            private static readonly string[] keyName = new string[]
+            {
+                "UNKNOWN", "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", "UNKNOWN",
+                "BACK", "TAB", "UNKNOWN", "UNKNOWN", "CLEAR", "RETURN", "UNKNOWN", "UNKNOWN",
+                "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", "HANGUL", "UNKNOWN", "JUNJA",
+                "FINAL", "HANJA", "UNKNOWN", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", "MODECHANGE",
+                "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT",
+                "DOWN", "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP",
+                "0", "1", "2", "3", "4", "5", "6", "7",
+                "8", "9", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J", "K", "L", "M", "N", "O",
+                "P", "Q", "R", "S", "T", "U", "V", "W",
+                "X", "Y", "Z", "LWIN", "RWIN", "APPS", "UNKNOWN", "SLEEP",
+                "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7",
+                "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", "DIVIDE",
+                "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8",
+                "F9", "F10", "F11", "F12", "F13", "F14", "F15", "F16",
+                "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
+                "F25", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "NUMLOCK", "SCROLL", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "LSHIFT", "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU", "BROWSER_BACK", "BROWSER_FORWARD",
+                "BROWSER_REFRESH", "BROWSER_STOP", "BROWSER_SEARCH", "BROWSER_FAVORITES", "BROWSER_HOME", "VOLUME_MUTE", "VOLUME_DOWN", "VOLUME_UP",
+                "MEDIA_NEXT_TRACK", "MEDIA_PREV_TRACK", "MEDIA_STOP", "MEDIA_PLAY_PAUSE", "LAUNCH_MAIL", "LAUNCH_MEDIA_SELECT", "LAUNCH_APP1", "LAUNCH_APP2",
+                "UNKNOWN", "UNKNOWN", "OEM_1", "OEM_PLUS", "OEM_COMMA", "OEM_MINUS", "OEM_PERIOD", "OEM_2",
+                "OEM_3", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "OEM_4", "OEM_5", "OEM_6", "OEM_7", "OEM_8",
+                "UNKNOWN", "UNKNOWN", "OEM_102", "UNKNOWN", "UNKNOWN", "PROCESSKEY", "UNKNOWN", "PACKET",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN",
+                "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "ATTN", "CRSEL",
+                "EXSEL", "EREOF", "PLAY", "ZOOM", "NONAME", "PA1", "OEM_CLEAR", "UNKNOWN",
+            };
+            /// <summary>
+            /// Get the key's name
+            /// </summary>
+            /// <param name="keyCode"></param>
+            /// <returns></returns>
+            public static string GetKeyName(byte keyCode)
+            {
+                return keyName[keyCode];
+            }
+
+            #region 常量定义
             /// <summary>
             /// 鼠标左键
             /// </summary>
@@ -728,6 +769,7 @@ namespace SuperIo
             /// 清除键
             /// </summary>
             public static readonly byte VK_OEM_CLEAR = 0xfe;
+            #endregion
         }
 
         /// <summary>
@@ -735,6 +777,29 @@ namespace SuperIo
         /// </summary>
         public static class Mouse
         {
+            private static readonly string[] mouseName = new string[]
+            {
+                "", "MOUSEMOVE", "LBUTTON", "RBUTTON", "MBUTTON", "LBUTTON", "RBUTTON", "MBUTTON",
+                "MOUSEWHEEL", "XBUTTON1", "XBUTTON1", "XBUTTON2", "XBUTTON2"
+            };
+            /// <summary>
+            /// Get the mouse button name
+            /// </summary>
+            /// <param name="mouseCode"></param>
+            /// <returns></returns>
+            public static string GetMouseName(byte mouseCode)
+            {
+                if (0 < mouseCode && mouseCode < 13)
+                {
+                    return mouseName[mouseCode];
+                }
+                else
+                {
+                    return "UNKNOWN";
+                }
+            }
+
+            #region 常量定义
             /// <summary>
             /// mouse move event
             /// </summary>
@@ -783,6 +848,7 @@ namespace SuperIo
             /// extra button 2 up
             /// </summary>
             public static readonly byte XBUTTON2UP = 12;
+            #endregion
         }
     }
 }
