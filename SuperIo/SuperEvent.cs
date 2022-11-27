@@ -593,7 +593,15 @@ namespace SuperIo
                         eventValue = Mouse.MBUTTONUP;
                         break;
                     case WM_MOUSEWHEEL:
-                        eventValue = Mouse.MOUSEWHEEL;
+                        int wheelDelta = hookStruct.mouseData >> 16;
+                        if (wheelDelta >= 0)
+                        {
+                            eventValue = Mouse.MOUSEWHEELUP;
+                        }
+                        else
+                        {
+                            eventValue = Mouse.MOUSEWHEELDOWN;
+                        }
                         break;
                     case WM_XBUTTONDOWN:
                     case WM_XBUTTONDOWN_A:

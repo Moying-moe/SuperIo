@@ -779,8 +779,8 @@ namespace SuperIo
         {
             private static readonly string[] mouseName = new string[]
             {
-                "", "MOUSEMOVE", "LBUTTON", "RBUTTON", "MBUTTON", "LBUTTON", "RBUTTON", "MBUTTON",
-                "MOUSEWHEEL", "XBUTTON1", "XBUTTON1", "XBUTTON2", "XBUTTON2"
+                "", "MOUSEMOVE", "LBUTTON", "LBUTTON", "RBUTTON", "RBUTTON", "MBUTTON", "MBUTTON",
+                "WHEELUP", "WHEELDOWN", "XBUTTON1", "XBUTTON1", "XBUTTON2", "XBUTTON2"
             };
             /// <summary>
             /// Get the mouse button name
@@ -809,45 +809,49 @@ namespace SuperIo
             /// </summary>
             public static readonly byte LBUTTONDOWN = 2;
             /// <summary>
-            /// right button down
-            /// </summary>
-            public static readonly byte RBUTTONDOWN = 3;
-            /// <summary>
-            /// middle button (mouse wheel) down
-            /// </summary>
-            public static readonly byte MBUTTONDOWN = 4;
-            /// <summary>
             /// left button up
             /// </summary>
-            public static readonly byte LBUTTONUP = 5;
+            public static readonly byte LBUTTONUP = 3;
+            /// <summary>
+            /// right button down
+            /// </summary>
+            public static readonly byte RBUTTONDOWN = 4;
             /// <summary>
             /// right button up
             /// </summary>
-            public static readonly byte RBUTTONUP = 6;
+            public static readonly byte RBUTTONUP = 5;
+            /// <summary>
+            /// middle button (mouse wheel) down
+            /// </summary>
+            public static readonly byte MBUTTONDOWN = 6;
             /// <summary>
             /// middle button (mouse wheel) up
             /// </summary>
             public static readonly byte MBUTTONUP = 7;
             /// <summary>
-            /// scroll the mouse wheel
+            /// scroll the mouse wheel (away from the user)
             /// </summary>
-            public static readonly byte MOUSEWHEEL = 8;
+            public static readonly byte MOUSEWHEELUP = 8;
+            /// <summary>
+            /// scroll the mouse wheel (toward the user)
+            /// </summary>
+            public static readonly byte MOUSEWHEELDOWN = 9;
             /// <summary>
             /// extra button 1 down
             /// </summary>
-            public static readonly byte XBUTTON1DOWN = 9;
+            public static readonly byte XBUTTON1DOWN = 10;
             /// <summary>
             /// extra button 1 up
             /// </summary>
-            public static readonly byte XBUTTON1UP = 10;
+            public static readonly byte XBUTTON1UP = 11;
             /// <summary>
             /// extra button 2 down
             /// </summary>
-            public static readonly byte XBUTTON2DOWN = 11;
+            public static readonly byte XBUTTON2DOWN = 12;
             /// <summary>
             /// extra button 2 up
             /// </summary>
-            public static readonly byte XBUTTON2UP = 12;
+            public static readonly byte XBUTTON2UP = 13;
             #endregion
         }
     }

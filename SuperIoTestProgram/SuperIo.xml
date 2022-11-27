@@ -914,19 +914,14 @@
             left button down
             </summary>
         </member>
-        <member name="F:SuperIo.SuperIo.Mouse.RBUTTONDOWN">
-            <summary>
-            right button down
-            </summary>
-        </member>
-        <member name="F:SuperIo.SuperIo.Mouse.MBUTTONDOWN">
-            <summary>
-            middle button (mouse wheel) down
-            </summary>
-        </member>
         <member name="F:SuperIo.SuperIo.Mouse.LBUTTONUP">
             <summary>
             left button up
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperIo.Mouse.RBUTTONDOWN">
+            <summary>
+            right button down
             </summary>
         </member>
         <member name="F:SuperIo.SuperIo.Mouse.RBUTTONUP">
@@ -934,14 +929,24 @@
             right button up
             </summary>
         </member>
+        <member name="F:SuperIo.SuperIo.Mouse.MBUTTONDOWN">
+            <summary>
+            middle button (mouse wheel) down
+            </summary>
+        </member>
         <member name="F:SuperIo.SuperIo.Mouse.MBUTTONUP">
             <summary>
             middle button (mouse wheel) up
             </summary>
         </member>
-        <member name="F:SuperIo.SuperIo.Mouse.MOUSEWHEEL">
+        <member name="F:SuperIo.SuperIo.Mouse.MOUSEWHEELUP">
             <summary>
-            scroll the mouse wheel
+            scroll the mouse wheel (away from the user)
+            </summary>
+        </member>
+        <member name="F:SuperIo.SuperIo.Mouse.MOUSEWHEELDOWN">
+            <summary>
+            scroll the mouse wheel (toward the user)
             </summary>
         </member>
         <member name="F:SuperIo.SuperIo.Mouse.XBUTTON1DOWN">
