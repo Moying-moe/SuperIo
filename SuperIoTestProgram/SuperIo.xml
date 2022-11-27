@@ -25,6 +25,13 @@
             <para>Some may not work depend on your physical device type.</para>
             </summary>
         </member>
+        <member name="M:SuperIo.SuperIo.Key.GetKeyName(System.Byte)">
+            <summary>
+            Get the key's name
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
         <member name="F:SuperIo.SuperIo.Key.VK_LBUTTON">
             <summary>
             鼠标左键
@@ -890,6 +897,13 @@
             <para>Mouse code</para>
             </summary>
         </member>
+        <member name="M:SuperIo.SuperIo.Mouse.GetMouseName(System.Byte)">
+            <summary>
+            Get the mouse button name
+            </summary>
+            <param name="mouseCode"></param>
+            <returns></returns>
+        </member>
         <member name="F:SuperIo.SuperIo.Mouse.MOUSEMOVE">
             <summary>
             mouse move event
@@ -1138,7 +1152,7 @@
             <para><b>WARNING: SuperKeyboard's simulation will also trigger SuperEvent!</b> This may cause unexpect recursive call!</para>
             </summary>
             <param name="handler">Handler</param>
-            <returns>Return false if given key is already exists.</returns>
+            <returns>Return the registered hotkey id.</returns>
         </member>
         <member name="M:SuperIo.SuperEvent.RegisterKey(System.Byte,SuperIo.SuperEvent.EventHandler,SuperIo.SuperEvent.EventHandler)">
             <summary>
@@ -1148,7 +1162,7 @@
             <param name="key">Key that will trigger the handler</param>
             <param name="keyDownHandler">Key down handler</param>
             <param name="keyUpHandler">Key up handler</param>
-            <returns></returns>
+            <returns>Return the registered hotkey id.</returns>
         </member>
         <member name="M:SuperIo.SuperEvent.RegisterKey(System.Byte,SuperIo.SuperEvent.EventHandler,SuperIo.SuperEvent.EventHandler,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
@@ -1161,14 +1175,19 @@
             <param name="ctrl"></param>
             <param name="alt"></param>
             <param name="shift"></param>
-            <returns></returns>
+            <returns>Return the registered hotkey id.</returns>
         </member>
-        <member name="M:SuperIo.SuperEvent.UnregisterKey(System.Byte)">
+        <member name="M:SuperIo.SuperEvent.UnregisterKey(System.Int32)">
             <summary>
             Unregister an exist key event.
             </summary>
-            <param name="key"></param>
+            <param name="eventId">Event id that `RegisterKey` returned</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperEvent.UnregisterAllKeys">
+            <summary>
+            Unregister all key events.
+            </summary>
         </member>
         <member name="M:SuperIo.SuperEvent.AddGlobalKeyHandler(SuperIo.SuperEvent.GlobalKeyHandler)">
             <summary>
@@ -1237,7 +1256,7 @@
             <para><b>WARNING: SuperMouse's simulation will also trigger SuperEvent!</b> This may cause unexpect recursive call!</para>
             </summary>
             <param name="handler">Handler</param>
-            <returns>Return false if given event is already exists.</returns>
+            <returns>Return the registered mouse event id.</returns>
         </member>
         <member name="M:SuperIo.SuperEvent.RegisterMouse(System.Byte,SuperIo.SuperEvent.EventHandler)">
             <summary>
@@ -1246,7 +1265,7 @@
             </summary>
             <param name="mouseEvent">Mouse event that will trigger the handler</param>
             <param name="handler">Event handler</param>
-            <returns></returns>
+            <returns>Return the registered mouse event id.</returns>
         </member>
         <member name="M:SuperIo.SuperEvent.RegisterMouse(System.Byte,SuperIo.SuperEvent.EventHandler,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
@@ -1258,14 +1277,19 @@
             <param name="ctrl"></param>
             <param name="alt"></param>
             <param name="shift"></param>
-            <returns></returns>
+            <returns>Return the registered mouse event id.</returns>
         </member>
-        <member name="M:SuperIo.SuperEvent.UnregisterMouse(System.Byte)">
+        <member name="M:SuperIo.SuperEvent.UnregisterMouse(System.Int32)">
             <summary>
             Unregister an exist mouse event.
             </summary>
-            <param name="mouseEvent"></param>
+            <param name="eventId">Event it that `RegisterMouse` returned</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperIo.SuperEvent.UnregisterAllMouses">
+            <summary>
+            Unregister all mouse events.
+            </summary>
         </member>
         <member name="M:SuperIo.SuperEvent.AddGlobalMouseHandler(SuperIo.SuperEvent.GlobalMouseHandler)">
             <summary>

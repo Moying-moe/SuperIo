@@ -80,6 +80,8 @@ namespace SuperIo
 
         const int WM_KEYDOWN = 0x0100;//键盘按键按下对应的值
         const int WM_KEYUP = 0x0101;//键盘按键抬起对应的值
+        const int WM_SYSTEMDOWN = 0x0104;// Alt和F10的按下
+        const int WM_SYSTEMUP = 0x0105;// Alt和F10的松开
 
         private const int WM_MOUSEMOVE = 0x200;// 鼠标移动
         private const int WM_LBUTTONDOWN = 0x201;// 鼠标左键按下
@@ -246,7 +248,7 @@ namespace SuperIo
                 bool isKeyDown = false;
                 bool isKeyUp = false;
 
-                if (wParam == WM_KEYDOWN)
+                if (wParam == WM_KEYDOWN || wParam == WM_SYSTEMDOWN)
                 {
                     if (!_keyStatus.Contains(key))
                     {
@@ -254,7 +256,7 @@ namespace SuperIo
                         isKeyDown = true;
                     }
                 }
-                if (wParam == WM_KEYUP)
+                if (wParam == WM_KEYUP || wParam == WM_SYSTEMUP)
                 {
                     if (_keyStatus.Contains(key))
                     {
